@@ -10,7 +10,7 @@ interface InputProps extends React.HTMLProps<HTMLInputElement> {
 export const Input: React.FC<InputProps> = ({
   placeholder = "Введите текст",
   extraClass = "",
-  type = "text",
+  type = "",
   maxLength,
   max,
   isLimitText = false,
