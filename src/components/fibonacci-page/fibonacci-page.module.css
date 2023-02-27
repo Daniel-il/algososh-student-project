@@ -19,7 +19,3 @@
 .balloon_sorted {
     background-color: #7FE051;
 }
-.balloons { 
-    display: flex;
-    gap: 16px;
-}

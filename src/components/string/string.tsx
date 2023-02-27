@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent, FormEvent, useEffect } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
@@ -8,56 +8,70 @@ import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import { DELAY_IN_MS } from "../../constants/delays";
 import { Balloon } from "../balloon/balloon";
+import { LettersStep } from "../../types/utils";
+import { getSteps } from "../../utils/utils";
 export const StringComponent: React.FC = () => {
-  const [string, setString] = useState('');
-  const [balloons, setBalloons] = useState([]);
-  const [animationIndex, setAnimationIndex] = useState(-1);
+  const [steps, setSteps] = useState<LettersStep[]>([]);
+  const [currentStep, setCurrentStep] = useState<LettersStep | null>(null);
+  const [stepsIndex, setStepsIndex] = useState<number>(0);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setString(event.target.value);
-  };
-
-  const handleReverse = () => {
-    setString()
-    const reversedString = string.split('').reverse().join('');
-    setString(reversedString);
-
-    const newBalloons = Array.from(reversedString);
-    setBalloons(newBalloons);
-
-    setAnimationIndex(0);
-    setTimeout(() => {
-      setAnimationIndex(-1);
-    }, newBalloons.length * 1000);
-  };
-
-  const getBalloonState = (index: number) => {
-    if (animationIndex < 0) {
-      return ElementStates.Modified;
-    } else if (index === animationIndex || index === animationIndex + 1) {
-      return ElementStates.Changing;
-    } else {
-      return ElementStates.Default;
+  useEffect(() => {
+    if (steps.length === 0 || stepsIndex >= steps.length) {
+      return;
     }
+
+    setCurrentStep(steps[stepsIndex]);
+
+    setTimeout(() => {
+      setStepsIndex(stepsIndex + 1);
+    }, 2000);
+  }, [steps, stepsIndex]);
+
+  const onLettersSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formElements = form.elements as typeof form.elements & {
+      lettersInput: HTMLInputElement;
+    };
+    const letters = formElements.lettersInput.value.toUpperCase();
+
+    setCurrentStep(null);
+    setStepsIndex(0);
+    setSteps(getSteps(letters));
   };
+
   return (
     <SolutionLayout title="Строка">
-      <div className={styles.container}>
+      <form onSubmit={onLettersSubmit} className={styles.container}>
         <Input
+          isLimitText={true}
           maxLength={11}
           extraClass={styles.input}
-          value={string}
-          onChange={handleInputChange}
+          name="lettersInput"
+          type="text"
         />
-        <Button text="Развернуть" onClick={handleReverse} />
-        <p className={styles.container__caption}>Максимум — 11 символов</p>
-      </div>
+        <Button text="Развернуть" type="submit" />
+      </form>
+
       <div className={styles.balloons}>
-      {balloons.map((letter, index) => (
-          <Balloon key={index} state={getBalloonState(index)} letter={letter} index = {index} timeoutValue ={1000}>
-            
-          </Balloon>
-        ))}
+        {currentStep &&
+          currentStep.letters.map((letter, index) => {
+            let stateClass = "";
+            const stepIndex = currentStep.index;
+            if (stepIndex !== undefined) {
+              if (
+                index === stepIndex ||
+                index === currentStep.letters.length - stepIndex - 1
+              ) {
+                stateClass = currentStep.state ?? "";
+                console.log(stateClass);
+              }
+            }
+
+            return (
+              <Circle key={index} state={!currentStep ? 'default' : stateClass } letter={letter}></Circle>
+            );
+          })}
       </div>
     </SolutionLayout>
   );

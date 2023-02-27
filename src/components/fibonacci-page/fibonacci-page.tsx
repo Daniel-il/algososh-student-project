@@ -17,28 +17,22 @@ export const FibonacciPage: FC = () => {
     setInput(value);
   };
   const handleSubmit = (e: FormEvent) => {
-    setFibonacciNumbers([])
+    setFibonacciNumbers([]);
     e.preventDefault();
-    calculateFibonacciSequence()
-
-  }
+    calculateFibonacciSequence();
+  };
   const calculateFibonacciSequence = () => {
-  
-
-   
-    console.log(loading)
+    console.log(loading);
     let fibonacciNumbers = [1, 1];
     for (let i = 2; i < input; i++) {
       fibonacciNumbers.push(fibonacciNumbers[i - 1] + fibonacciNumbers[i - 2]);
     }
     setFibonacciNumbers(fibonacciNumbers);
     setLoading(false);
-  
   };
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
-      <div className={styles.container}>
-        <form  onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={styles.container}>
         <Input
           maxLength={11}
           extraClass={styles.input}
@@ -46,28 +40,29 @@ export const FibonacciPage: FC = () => {
           onChange={handleInput}
           min={1}
           max={19}
-        
-
+          isLimitText={true}
         />
         <Button
           text="Рассчитать"
           onClick={calculateFibonacciSequence}
           isLoader={loading}
         />
-         </form>
-        <p className={styles.container__caption}>Максимум — 11 символов</p>
-      </div>
+      </form>
       <AlgorithmContainer>
         {fibonacciNumbers.map((number, index) => (
-          <Balloon key={index} letter = {`${number}`} timeoutValue ={500} index = {index} tail ={index}>
-          </Balloon>
+          <Balloon
+            key={index}
+            letter={`${number}`}
+            timeoutValue={500}
+            index={index}
+          ></Balloon>
         ))}
         {() => {
           if (fibonacciNumbers.length === 0) {
-             return null
+            return null;
           }
         }}
-      </AlgorithmContainer >
+      </AlgorithmContainer>
     </SolutionLayout>
   );
 };

@@ -1,8 +1,9 @@
 .container{ 
     display: flex;
-    gap: 16px;
-    margin: 120px auto 0;
-    max-width: 944px;
+    gap: 40px 16px;
+    margin: 48px auto 0;
+    padding-bottom: 100px;
+    max-width: 960px;
     width: 100%;
     flex-wrap: wrap;
 }
