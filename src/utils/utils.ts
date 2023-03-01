@@ -108,51 +108,62 @@ export const BubbleSort = (
 };
 
 export const getSteps = (source: string): LettersStep[] => {
-    const letters = source.split("");
-    const steps: LettersStep[] = [];
-  
-    // Нет символов - нет шагов, всё честно
-    if (letters.length === 0) {
-      return steps;
-    }
-  
-    // Первым шагом показываем исходную строку
+  const letters = source.split("");
+  const steps: LettersStep[] = [];
+
+  // Нет символов - нет шагов, всё честно
+  if (letters.length === 0) {
+    return steps;
+  }
+
+  // Первым шагом показываем исходную строку
+  steps.push({
+    letters: [...letters],
+  });
+
+  let leftIndex = 0;
+  let rightIndex = letters.length - leftIndex - 1;
+
+  // До тех пор, пока не дошли до середины
+  while (leftIndex <= rightIndex) {
+    // Показываем, какие символы сейчас будут меняться местами
     steps.push({
-      letters: [...letters], 
-      state: ElementStates.Default
+      letters: [...letters], // Обязательно копируем!
+      index: leftIndex,
+      state: ElementStates.Changing,
     });
-  
-    let leftIndex = 0;
-    let rightIndex = letters.length - leftIndex - 1;
-  
-    // До тех пор, пока не дошли до середины
-    while (leftIndex <= rightIndex) {
-      // Показываем, какие символы сейчас будут меняться местами
-      steps.push({
-        letters: [...letters], // Обязательно копируем!
-        index: leftIndex,
-        state: ElementStates.Changing,
-      });
-  
-      // Меняем символы местами и показываем, что они изменились
-      letters[leftIndex] = source[rightIndex];
-      letters[rightIndex] = source[leftIndex];
-      steps.push({
-        letters: [...letters], // Обязательно копируем!
-        index: leftIndex,
-        state: ElementStates.Modified,
-      });
-  
-      // Двигаемся к середине
-      leftIndex++;
-      rightIndex--;
-    }
-  
-    // Завершаем разворот, показываем результат
+
+    // Меняем символы местами и показываем, что они изменились
+     const temp = letters[leftIndex];
+    letters[leftIndex] = letters[rightIndex];
+    letters[rightIndex] = temp;
     steps.push({
       letters: [...letters],
-      state: ElementStates.Modified, // Обязательно копируем!
+      index: leftIndex,
+      swappedIndexes: [leftIndex, rightIndex],
+      state: ElementStates.Modified,
     });
-  
-    return steps;
-  };
+
+    // Двигаемся к середине
+    leftIndex++;
+    rightIndex--;
+  }
+  steps.push({
+    letters: letters.map((letter, index) => {
+      if (index === leftIndex - 1 || index === rightIndex + 1) {
+        return letter;
+      } else {
+        return source[index];
+      }
+    }),
+    swappedIndexes: [leftIndex - 1, rightIndex + 1],
+    state: ElementStates.Modified,
+  });
+  // Завершаем разворот, показываем результат
+  steps.push({
+    letters: [...letters],
+    state: ElementStates.Modified, // Обязательно копируем!
+  });
+
+  return steps;
+};

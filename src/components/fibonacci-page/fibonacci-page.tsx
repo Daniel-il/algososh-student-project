@@ -1,4 +1,10 @@
-import React, { FC, FormEvent, FormEventHandler, useState } from "react";
+import React, {
+  FC,
+  FormEvent,
+  FormEventHandler,
+  useEffect,
+  useState,
+} from "react";
 import { AlgorithmContainer } from "../algorithm-container/algorithm-container";
 import { Balloon } from "../balloon/balloon";
 import { Button } from "../ui/button/button";
@@ -8,8 +14,8 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./fibonacci-page.module.css";
 export const FibonacciPage: FC = () => {
   const MAX_FIBONACCI_INDEX = 19;
-  const [loading, setLoading] = useState<boolean>();
-  const [input, setInput] = useState(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [input, setInput] = useState<number>();
   const [fibonacciNumbers, setFibonacciNumbers] = useState<number[]>([]);
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,12 +23,14 @@ export const FibonacciPage: FC = () => {
     setInput(value);
   };
   const handleSubmit = (e: FormEvent) => {
-    setFibonacciNumbers([]);
     e.preventDefault();
+    setFibonacciNumbers([]);
     calculateFibonacciSequence();
   };
-  const calculateFibonacciSequence = () => {
-    console.log(loading);
+  const calculateFibonacciSequence = async () => {
+    setLoading(true);
+    setFibonacciNumbers([]);
+    await new Promise((resolve) => setTimeout(resolve, 0));
     let fibonacciNumbers = [1, 1];
     for (let i = 2; i < input; i++) {
       fibonacciNumbers.push(fibonacciNumbers[i - 1] + fibonacciNumbers[i - 2]);
@@ -34,18 +42,20 @@ export const FibonacciPage: FC = () => {
     <SolutionLayout title="Последовательность Фибоначчи">
       <form onSubmit={handleSubmit} className={styles.container}>
         <Input
-          maxLength={11}
+          maxLength={2}
           extraClass={styles.input}
           value={input}
           onChange={handleInput}
+          type="number"
           min={1}
           max={19}
           isLimitText={true}
         />
         <Button
           text="Рассчитать"
-          onClick={calculateFibonacciSequence}
+        
           isLoader={loading}
+          type='submit'
         />
       </form>
       <AlgorithmContainer>

@@ -5,26 +5,32 @@ import { Button } from "../ui/button/button";
 import styles from "./string.module.css";
 import { useState } from "react";
 import { Circle } from "../ui/circle/circle";
-import { ElementStates } from "../../types/element-states";
+
 import { DELAY_IN_MS } from "../../constants/delays";
 import { Balloon } from "../balloon/balloon";
 import { LettersStep } from "../../types/utils";
 import { getSteps } from "../../utils/utils";
+import { ElementStates } from "../../types/element-states";
+
 export const StringComponent: React.FC = () => {
   const [steps, setSteps] = useState<LettersStep[]>([]);
-  const [currentStep, setCurrentStep] = useState<LettersStep | null>(null);
+  const [currentStep, setCurrentStep] = useState<LettersStep | null>({
+    letters: [],
+    state: ElementStates.Default,
+  });
   const [stepsIndex, setStepsIndex] = useState<number>(0);
 
   useEffect(() => {
     if (steps.length === 0 || stepsIndex >= steps.length) {
       return;
     }
+    console.log(steps);
 
     setCurrentStep(steps[stepsIndex]);
 
     setTimeout(() => {
-      setStepsIndex(stepsIndex + 1);
-    }, 2000);
+      setStepsIndex((stepsIndex) => stepsIndex + 1);
+    }, 1000);
   }, [steps, stepsIndex]);
 
   const onLettersSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -57,19 +63,24 @@ export const StringComponent: React.FC = () => {
         {currentStep &&
           currentStep.letters.map((letter, index) => {
             let stateClass = "";
-            const stepIndex = currentStep.index;
-            if (stepIndex !== undefined) {
-              if (
-                index === stepIndex ||
-                index === currentStep.letters.length - stepIndex - 1
-              ) {
-                stateClass = currentStep.state ?? "";
-                console.log(stateClass);
-              }
+            
+            if (
+              currentStep.state === ElementStates.Changing &&
+              currentStep.index !== undefined &&
+              (index === currentStep.index || index === currentStep.index + 1)
+            ) {
+              stateClass = ElementStates.Changing;
+            } else if (
+              currentStep.state === ElementStates.Modified &&
+              currentStep.swappedIndexes?.includes(index)
+            ) {
+              stateClass = ElementStates.Modified;
+            } else {
+              stateClass = ElementStates.Default;
             }
-
+            console.log(stateClass)
             return (
-              <Circle key={index} state={!currentStep ? 'default' : stateClass } letter={letter}></Circle>
+              <Circle key={index} state={stateClass} letter={letter}></Circle>
             );
           })}
       </div>
