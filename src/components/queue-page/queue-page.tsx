@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { TQueueItem } from "../../types/utils";
 import { Circle } from "../ui/circle/circle";
@@ -10,36 +10,43 @@ import styles from './queue-page.module.css'
 import { QueueClass } from "./queue-page-class";
 
 export const QueuePage: React.FC = () => {
-  const [inputValue, setInputValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const queueClass = new QueueClass(setInputValue, setIsLoading);
-  const [queue, setQueue] = useState<TQueueItem[]>(queueClass.getQueue());
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value.slice(0, 4)); // Limit the input value to four characters
+  const [queue, setQueue] = useState<QueueClass>();
+  const [inputValue, setInputValue] = useState(""); 
+  const [isLoading, setIsLoading] = useState(false); 
+  useEffect(()=>{
+    setQueue(new QueueClass(7))
+  },[])
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+  const handleEnqueueClick = () => {
+    if (queue)  {
+      const newQueue = new QueueClass(7);
+      newQueue.enqueue(inputValue);
+      newQueue.items = [...queue.items]
+ 
+      setQueue(newQueue)
+      setInputValue("");
+      console.log(newQueue.items)
+    }
+   
   };
 
-  const enqueue = () => {
-    if (queue.length >= 7) return; // Limit the queue size to 7 elements
-    const newItem: TQueueItem = {
-      value: inputValue,
-      color: ElementStates.Changing,
-    };
-    queueClass.enqueue(newItem);
-    setQueue(queueClass.getQueue());
-    setInputValue("");
+ 
+  const handleDequeueClick = () => {
+    if (queue) {
+      const newQueue = new QueueClass(7);
+      newQueue.items = [...queue.items]
+      queue.dequeue();
+    }
+   
+
   };
 
-  const dequeue = () => {
-    queueClass.dequeue();
-    setQueue(queueClass.getQueue());
+  const handleClearClick = () => {
+    if (queue) 
+    queue.clear()
   };
-
-  const clearQueue = () => {
-    queueClass.clearQueue();
-    setQueue(queueClass.getQueue());
-  };
-
 
 
   return (
@@ -50,19 +57,20 @@ export const QueuePage: React.FC = () => {
           onChange={handleInputChange}
           disabled={isLoading}
           extraClass={styles.input}
+          maxLength={4}
         />
-        <Button onClick={enqueue} disabled={isLoading} text='Добавить' />
-        <Button onClick={dequeue} disabled={isLoading} text='Удалить'/>
-        <Button onClick={clearQueue} disabled={isLoading} text='Очистить' />
+        <Button onClick={handleEnqueueClick} disabled={isLoading} text='Добавить' />
+        <Button onClick={handleDequeueClick} disabled={isLoading} text='Удалить'/>
+        <Button onClick={handleClearClick} disabled={isLoading} text='Очистить' />
       </form>
       <AlgorithmContainer>
-      {queue.length === 0 && <Circle letter="-" />}
-        {queue.map((item, index) => (
+      {queue && queue.items &&
+          queue.items.map((item, index) => (
           <Circle
             key={index}
-            letter={item.value}
-            state={item.color}
-            isActive={index === 0}
+            letter={item}
+            head={queue.head === index && queue.items[index] !== ''  ? 'head' : ''}
+            tail={queue.tail === index && queue.size() !== 0  ? 'tail' : ''}
           />
         ))}
       </AlgorithmContainer> 

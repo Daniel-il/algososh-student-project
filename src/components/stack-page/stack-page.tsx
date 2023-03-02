@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
@@ -10,7 +10,7 @@ import { ElementStates } from "../../types/element-states";
 
 export const StackPage: React.FC = () => {
   const [stack, setStack] = useState<Stack>()
-  useEffect(()=> {
+  useMemo(()=> {
     setStack(new Stack())
   }, [])
   const [inputValue, setInputValue] = useState<string>("");

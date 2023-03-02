@@ -11,6 +11,7 @@ import { Balloon } from "../balloon/balloon";
 import { LettersStep } from "../../types/utils";
 import { getSteps } from "../../utils/utils";
 import { ElementStates } from "../../types/element-states";
+import { stat } from "fs/promises";
 
 export const StringComponent: React.FC = () => {
   const [steps, setSteps] = useState<LettersStep[]>([]);
@@ -60,23 +61,20 @@ export const StringComponent: React.FC = () => {
       </form>
 
       <div className={styles.balloons}>
-        {currentStep &&
-          currentStep.letters.map((letter, index) => {
+        {currentStep && currentStep.letters.map((letter, index) => {
+            // Определяем класс для символа
+            // Если индекс шага совпадает с индексом символа слева или справа,
+            // то применяем состояние из шага
             let stateClass = "";
+            const stepIndex = currentStep.index;
             
-            if (
-              currentStep.state === ElementStates.Changing &&
-              currentStep.index !== undefined &&
-              (index === currentStep.index || index === currentStep.index + 1)
-            ) {
-              stateClass = ElementStates.Changing;
-            } else if (
-              currentStep.state === ElementStates.Modified &&
-              currentStep.swappedIndexes?.includes(index)
-            ) {
-              stateClass = ElementStates.Modified;
-            } else {
-              stateClass = ElementStates.Default;
+            if (stepIndex !== undefined) {
+              if (
+                index === stepIndex ||
+                index === currentStep.letters.length - stepIndex - 1
+              ) {
+                stateClass = currentStep.state ?? "";
+              }
             }
             console.log(stateClass)
             return (

@@ -6,6 +6,7 @@ import { Button } from "../ui/button/button";
 import { Direction } from "../../types/direction";
 import { BubbleSort, randomArr, SelectionSort } from "../../utils/utils";
 import { AlgorithmContainer } from "../algorithm-container/algorithm-container";
+import { Column } from "../ui/column/column";
 
 export const SortingPage: React.FC = () => {
   const [arr, setArr] = useState(randomArr(3, 17));
@@ -13,6 +14,7 @@ export const SortingPage: React.FC = () => {
   const [sortMethod, setSortMethod] = useState<"Selection" | "Bubble">(
     "Selection"
   );
+  const [isLoading, setIsLoading] = useState(false);
   const [sortDirection, setSortDirection] = useState<
     "Ascending" | "Descending"
   >("Ascending");
@@ -28,8 +30,14 @@ export const SortingPage: React.FC = () => {
   };
 
   const handleNewArray = () => {
-    if (isSorting) return;
+    setIsLoading(true);
+    console.log(isLoading)
     setArr(randomArr(3, 17));
+    if(arr) 
+    setIsLoading(false)
+    
+    console.log(isLoading)
+  ;
   };
 
   const handleSortMethodChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,25 +104,15 @@ export const SortingPage: React.FC = () => {
             handleNewArray();
           }}
           disabled={isSorting}
+          isLoader={isLoading}
         />
       </form>
       <AlgorithmContainer extraClass={styles.container}>
         {arr.map((num, i) => (
-          <div
+          <Column
             key={i}
-            className="array-element"
-            style={{
-              height: `${(340 * num) / 100}px`,
-              width: "50px",
-              backgroundColor: isSorting
-                ? "#D252E1"
-                : "#7FE051"
-                ? "#0032FF"
-                : "#0032FF",
-            }}
-          >
-            <p>{num}</p>
-          </div>
+            index={num}
+          />
         ))}
       </AlgorithmContainer>
     </SolutionLayout>

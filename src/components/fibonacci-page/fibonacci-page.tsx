@@ -1,8 +1,6 @@
 import React, {
   FC,
   FormEvent,
-  FormEventHandler,
-  useEffect,
   useState,
 } from "react";
 import { AlgorithmContainer } from "../algorithm-container/algorithm-container";
@@ -13,7 +11,6 @@ import { Input } from "../ui/input/input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./fibonacci-page.module.css";
 export const FibonacciPage: FC = () => {
-  const MAX_FIBONACCI_INDEX = 19;
   const [loading, setLoading] = useState<boolean>(false);
   const [input, setInput] = useState<number>();
   const [fibonacciNumbers, setFibonacciNumbers] = useState<number[]>([]);
@@ -32,6 +29,7 @@ export const FibonacciPage: FC = () => {
     setFibonacciNumbers([]);
     await new Promise((resolve) => setTimeout(resolve, 0));
     let fibonacciNumbers = [1, 1];
+    if(input)
     for (let i = 2; i < input; i++) {
       fibonacciNumbers.push(fibonacciNumbers[i - 1] + fibonacciNumbers[i - 2]);
     }
@@ -53,7 +51,6 @@ export const FibonacciPage: FC = () => {
         />
         <Button
           text="Рассчитать"
-        
           isLoader={loading}
           type='submit'
         />
