@@ -79,7 +79,7 @@ export const StringComponent: React.FC = () => {
             }
             console.log(stateClass);
             return (
-              <Circle key={index} state={stateClass} letter={letter}></Circle>
+              <Circle key={index} state={stateClass} letter={letter} />
             );
           })}
       </AlgorithmContainer>

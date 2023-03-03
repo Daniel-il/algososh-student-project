@@ -94,4 +94,3 @@ export const StackPage: React.FC = () => {
     </SolutionLayout>
   );
 };
-  

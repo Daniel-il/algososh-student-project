@@ -1,3 +1,4 @@
+import { LinkedList, LinkedListNode } from "../components/list-page/list-page-class";
 import { ElementStates } from "./element-states";
 
 export interface LettersStep {
@@ -8,7 +9,7 @@ export interface LettersStep {
   // Если нет индекса, значит, сейчас ничего не меняется
   index?: number;
   // Состояние: changing - символ будет меняться, modified - символ изменился
-  state: ElementStates[];
+  state: ElementStates[] | ElementStates;
   swappedIndexes?: number[];
 }
 export type TQueueItem = {
@@ -18,3 +19,9 @@ export type TQueueItem = {
 export interface QueueState {
   items: string[];
 }
+export type TStages = {
+  stage: LinkedListNode<string>[];
+  index?: number;
+  value?: string;
+  operation?: string;
+};

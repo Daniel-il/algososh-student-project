@@ -1,0 +1,9 @@
+.list__controls {
+    max-width: 952px;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+.list__input {
+    max-width: 204px;
+}

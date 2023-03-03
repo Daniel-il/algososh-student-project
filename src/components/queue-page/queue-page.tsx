@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { TQueueItem } from "../../types/utils";
 import { Circle } from "../ui/circle/circle";
@@ -10,42 +10,33 @@ import styles from './queue-page.module.css'
 import { QueueClass } from "./queue-page-class";
 
 export const QueuePage: React.FC = () => {
-  const [queue, setQueue] = useState<QueueClass>();
+  const queueRef = useRef(new QueueClass(7))
+  const [queue, setQueue] = useState<QueueClass>()
   const [inputValue, setInputValue] = useState(""); 
   const [isLoading, setIsLoading] = useState(false); 
-  useEffect(()=>{
-    setQueue(new QueueClass(7))
-  },[])
+  useMemo(() => {setQueue(new QueueClass(7))}, [])
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
   const handleEnqueueClick = () => {
-    if (queue)  {
-      const newQueue = new QueueClass(7);
-      newQueue.enqueue(inputValue);
-      newQueue.items = [...queue.items]
- 
-      setQueue(newQueue)
+      queueRef.current.enqueue(inputValue);
+      queueRef.current.items = [...queueRef.current.items]
       setInputValue("");
-      console.log(newQueue.items)
-    }
+      console.log(queueRef.current.items)
+
    
   };
 
  
   const handleDequeueClick = () => {
-    if (queue) {
-      const newQueue = new QueueClass(7);
-      newQueue.items = [...queue.items]
-      queue.dequeue();
-    }
-   
+    
+      queueRef.current.items = [...queueRef.current.items]
+      queueRef.current.dequeue();
 
-  };
-
+  
+  }
   const handleClearClick = () => {
-    if (queue) 
-    queue.clear()
+    queueRef.current.clear()
   };
 
 
@@ -64,16 +55,16 @@ export const QueuePage: React.FC = () => {
         <Button onClick={handleClearClick} disabled={isLoading} text='Очистить' />
       </form>
       <AlgorithmContainer>
-      {queue && queue.items &&
-          queue.items.map((item, index) => (
+      {queueRef.current.items && queueRef.current.items &&
+          queueRef.current.items.map((item, index) => (
           <Circle
             key={index}
             letter={item}
-            head={queue.head === index && queue.items[index] !== ''  ? 'head' : ''}
-            tail={queue.tail === index && queue.size() !== 0  ? 'tail' : ''}
+            head={queueRef.current.head === index && queueRef.current.items[index] !== ''  ? 'head' : ''}
+            tail={queueRef.current.tail === index && queueRef.current.size() !== 0  ? 'tail' : ''}
           />
         ))}
       </AlgorithmContainer> 
     </SolutionLayout>
   );
-};
+}
