@@ -8,7 +8,7 @@ export interface LettersStep {
   // Если нет индекса, значит, сейчас ничего не меняется
   index?: number;
   // Состояние: changing - символ будет меняться, modified - символ изменился
-  state?: ElementStates;
+  state: ElementStates[];
   swappedIndexes?: number[];
 }
 export type TQueueItem = {

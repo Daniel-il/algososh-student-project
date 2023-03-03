@@ -6,12 +6,10 @@ import styles from "./string.module.css";
 import { useState } from "react";
 import { Circle } from "../ui/circle/circle";
 
-import { DELAY_IN_MS } from "../../constants/delays";
-import { Balloon } from "../balloon/balloon";
 import { LettersStep } from "../../types/utils";
 import { getSteps } from "../../utils/utils";
 import { ElementStates } from "../../types/element-states";
-import { stat } from "fs/promises";
+import { AlgorithmContainer } from "../algorithm-container/algorithm-container";
 
 export const StringComponent: React.FC = () => {
   const [steps, setSteps] = useState<LettersStep[]>([]);
@@ -60,28 +58,31 @@ export const StringComponent: React.FC = () => {
         <Button text="Развернуть" type="submit" />
       </form>
 
-      <div className={styles.balloons}>
-        {currentStep && currentStep.letters.map((letter, index) => {
-            // Определяем класс для символа
-            // Если индекс шага совпадает с индексом символа слева или справа,
-            // то применяем состояние из шага
+      <AlgorithmContainer extraClass={styles.balloons}>
+        {currentStep &&
+          currentStep.letters.map((letter, index) => {
             let stateClass = "";
-            const stepIndex = currentStep.index;
-            
-            if (stepIndex !== undefined) {
+
+            if (currentStep.state[index] === ElementStates.Modified) {
+              stateClass = ElementStates.Modified;
+            } else if (currentStep.index !== undefined) {
               if (
-                index === stepIndex ||
-                index === currentStep.letters.length - stepIndex - 1
+                index === currentStep.index ||
+                index === currentStep.letters.length - currentStep.index - 1
               ) {
-                stateClass = currentStep.state ?? "";
+                stateClass = ElementStates.Changing;
+              } else {
+                stateClass = ElementStates.Default;
               }
+            } else {
+              stateClass = ElementStates.Default;
             }
-            console.log(stateClass)
+            console.log(stateClass);
             return (
               <Circle key={index} state={stateClass} letter={letter}></Circle>
             );
           })}
-      </div>
+      </AlgorithmContainer>
     </SolutionLayout>
   );
 };

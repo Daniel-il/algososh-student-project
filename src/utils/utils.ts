@@ -108,51 +108,41 @@ export const BubbleSort = (
 };
 
 export const getSteps = (source: string): LettersStep[] => {
-    const letters = source.split("");
-    const steps: LettersStep[] = [];
-  
-    // Нет символов - нет шагов, всё честно
-    if (letters.length === 0) {
-      return steps;
-    }
-  
-    // Первым шагом показываем исходную строку
+  const letters = source.split("");
+  const steps: LettersStep[] = [];
+  const len = letters.length;
+
+  const elementStates = new Array<ElementStates>(len).fill(
+    ElementStates.Default
+  );
+
+  for (let i = 0; i < Math.ceil(len / 2); i++) {
+    const leftIndex = i;
+    const rightIndex = len - 1 - i;
+
+    elementStates[leftIndex] = ElementStates.Changing;
+    elementStates[rightIndex] = ElementStates.Changing;
+
+    [letters[leftIndex], letters[rightIndex]] = [
+      letters[rightIndex],
+      letters[leftIndex],
+    ];
+
     steps.push({
       letters: [...letters],
-      state: ElementStates.Default// Обязательно копируем!
+      index: i,
+      state: [...elementStates],
     });
-  
-    let leftIndex = 0;
-    let rightIndex = letters.length - leftIndex - 1;
-  
-    // До тех пор, пока не дошли до середины
-    while (leftIndex <= rightIndex) {
-      // Показываем, какие символы сейчас будут меняться местами
-      steps.push({
-        letters: [...letters], // Обязательно копируем!
-        index: leftIndex,
-        state: ElementStates.Changing
-      });
-  
-      // Меняем символы местами и показываем, что они изменились
-      letters[leftIndex] = source[rightIndex];
-      letters[rightIndex] = source[leftIndex];
-      steps.push({
-        letters: [...letters], // Обязательно копируем!
-        index: leftIndex,
-        state: ElementStates.Modified
-      });
-  
-      // Двигаемся к середине
-      leftIndex++;
-      rightIndex--;
-    }
-  
-    // Завершаем разворот, показываем результат
+
+    elementStates[leftIndex] = ElementStates.Modified;
+    elementStates[rightIndex] = ElementStates.Modified;
+
     steps.push({
       letters: [...letters],
-      state: ElementStates.Modified // Обязательно копируем!
+      index: i,
+      state: [...elementStates],
     });
-  
-    return steps;
+  }
+
+  return steps;
 };

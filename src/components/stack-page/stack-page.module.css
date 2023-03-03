@@ -6,6 +6,7 @@
 }
 .input {
   max-width: 377px;
+  margin-right: 12px;
 }
 .algorithm__container {
   display: flex;
@@ -14,4 +15,13 @@
   margin: 48px auto 0;
   gap: 64px 12px;
   flex-wrap: wrap;
+}
+.button {
+  margin-right: 12px;
+}
+.button:nth-of-type(2) {
+  margin-right: 80px;
+}
+.button:last-of-type {
+  margin-right: 0;
 }
