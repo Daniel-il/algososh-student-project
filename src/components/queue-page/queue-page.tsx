@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { TQueueItem } from "../../types/utils";
 import { Circle } from "../ui/circle/circle";
@@ -10,33 +10,49 @@ import styles from './queue-page.module.css'
 import { QueueClass } from "./queue-page-class";
 
 export const QueuePage: React.FC = () => {
-  const queueRef = useRef(new QueueClass(7))
-  const [queue, setQueue] = useState<QueueClass>()
   const [inputValue, setInputValue] = useState(""); 
   const [isLoading, setIsLoading] = useState(false); 
-  useMemo(() => {setQueue(new QueueClass(7))}, [])
+  const queueRef = useRef(new QueueClass(7));
+
+  const [animation, setAnimation] = useState<'head' | 'tail' | null>(null);
+
+  useEffect(() => {
+    timerRef.current = setTimeout(() => {
+      setAnimation(null);
+    }, 500);
+  }, [animation]);
+
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // clear timer Timeout when unmounted to prevent memory leak
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
-  const handleEnqueueClick = () => {
-      queueRef.current.enqueue(inputValue);
-      queueRef.current.items = [...queueRef.current.items]
-      setInputValue("");
-      console.log(queueRef.current.items)
 
-   
+  const handleEnqueueClick = (event: MouseEvent<HTMLButtonElement>) => {
+   queueRef.current.enqueue(inputValue);
+    setInputValue("");
+    setAnimation('tail');
   };
 
  
-  const handleDequeueClick = () => {
-    
-      queueRef.current.items = [...queueRef.current.items]
-      queueRef.current.dequeue();
+  const handleDequeueClick = (event: MouseEvent<HTMLButtonElement>) => {
+    queueRef.current.dequeue();
+    setAnimation('head');
+  };
 
-  
-  }
-  const handleClearClick = () => {
+  const handleClearClick = (event: MouseEvent<HTMLButtonElement>) => {
     queueRef.current.clear()
+    setAnimation('tail');
+    setInputValue("");
   };
 
 
@@ -48,23 +64,22 @@ export const QueuePage: React.FC = () => {
           onChange={handleInputChange}
           disabled={isLoading}
           extraClass={styles.input}
-          maxLength={4}
         />
         <Button onClick={handleEnqueueClick} disabled={isLoading} text='Добавить' />
         <Button onClick={handleDequeueClick} disabled={isLoading} text='Удалить'/>
         <Button onClick={handleClearClick} disabled={isLoading} text='Очистить' />
       </form>
       <AlgorithmContainer>
-      {queueRef.current.items && queueRef.current.items &&
+      {queueRef.current.items &&
           queueRef.current.items.map((item, index) => (
           <Circle
             key={index}
             letter={item}
-            head={queueRef.current.head === index && queueRef.current.items[index] !== ''  ? 'head' : ''}
-            tail={queueRef.current.tail === index && queueRef.current.size() !== 0  ? 'tail' : ''}
+            isActive={index === 0}
+            animationDelay={index * 0.3}
           />
         ))}
       </AlgorithmContainer> 
     </SolutionLayout>
   );
-}
+};
