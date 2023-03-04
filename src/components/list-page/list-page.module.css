@@ -3,7 +3,27 @@
     display: flex;
     width: 100%;
     flex-wrap: wrap;
+    gap: 10px 0;
 }
 .list__input {
     max-width: 204px;
+    margin-right: 12px;
+}
+.element__container {
+    display: flex;
+    align-items: center;
+    gap: 5px
+}
+.list__button_small {
+    margin-right: 12px;
+}
+.list__button_large {
+    max-width: 345px;
+    width: 100%;
+    margin-right: 10px;
+}
+.list__button_large:last-of-type {
+    max-width: 345px;
+    width: 100%;
+    margin-right: 0;
 }

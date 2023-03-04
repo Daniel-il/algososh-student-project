@@ -14,9 +14,17 @@ export const StackPage: React.FC = () => {
     setStack(new Stack())
   }, [])
   const [inputValue, setInputValue] = useState<string>("");
+  const [delay, setDelay] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    timer.current = setTimeout(() => {
+      setDelay(false);
+    }, 500);
+  }, [delay]);
 
-  const handleAddClick = () => {
+  const handlePushClick = () => {
     if (stack && stack.stack.length < 20) {
+      setDelay(true)
       if (inputValue === "") {
         return;
       }
@@ -24,7 +32,7 @@ export const StackPage: React.FC = () => {
       setInputValue("");
     }
   };
-  const handleDeleteClick = () => {
+  const handleRemoveClick = () => {
     if (stack) {
       const newStack = new Stack();
       newStack.stack = [...stack.stack];
@@ -50,7 +58,7 @@ export const StackPage: React.FC = () => {
             className={styles.form__container}
             onSubmit={(e: FormEvent) => {
               e.preventDefault();
-              handleAddClick();
+              handlePushClick();
             }}
           >
             <Input
@@ -61,14 +69,15 @@ export const StackPage: React.FC = () => {
               }
               maxLength={4}
               extraClass={styles.input}
+              isLimitText={true}
             />
             <Button
-              onClick={handleAddClick}
+              onClick={handlePushClick}
               text="Добавить"
               extraClass={styles.button}
             />
             <Button
-              onClick={handleDeleteClick}
+              onClick={handleRemoveClick}
               text="Удалить"
               extraClass={styles.button}
             />
@@ -86,7 +95,7 @@ export const StackPage: React.FC = () => {
               letter={`${element}`}
               index={index}
               head={index === stack.stack.length - 1 ? 'top' : "" }
-              state={index === stack.stack.length - 1 ? ElementStates.Changing : ElementStates.Default}
+              state={delay && index === stack.stack.length - 1 ? ElementStates.Changing : ElementStates.Default}
             />
           ))}
         </AlgorithmContainer>

@@ -1,4 +1,4 @@
-import { LinkedList, LinkedListNode } from "../components/list-page/list-page-class";
+import { LinkedListNode } from "../components/list-page/list-page-class";
 import { ElementStates } from "./element-states";
 
 export interface LettersStep {
@@ -19,8 +19,8 @@ export type TQueueItem = {
 export interface QueueState {
   items: string[];
 }
-export type TStages = {
-  stage: LinkedListNode<string>[];
+export type TStepsOfList = {
+  step: LinkedListNode<string>[];
   index?: number;
   value?: string;
   operation?: string;

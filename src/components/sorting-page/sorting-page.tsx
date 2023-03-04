@@ -115,7 +115,7 @@ useEffect(() => {
           sorting={Direction.Ascending}
           text={"По возрастанию"}
           onClick={startSortAscending}
-          extraClass={""}
+          extraClass={styles.button}
           isLoader={sortDirection === "Ascending"}
           disabled={sortDirection === "Descending" || !arr.length}
           name="Ascending"
@@ -124,7 +124,7 @@ useEffect(() => {
           sorting={Direction.Descending}
           text={"По убыванию"}
           onClick={startSortDescending}
-          extraClass={""}
+          extraClass={styles.button}
           isLoader={sortDirection === "Descending"}
           disabled={sortDirection === "Ascending" || !arr.length}
           name="Descending"

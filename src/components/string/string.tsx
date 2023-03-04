@@ -17,32 +17,41 @@ export const StringComponent: React.FC = () => {
     letters: [],
     state: ElementStates.Default,
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [stepsIndex, setStepsIndex] = useState<number>(0);
 
   useEffect(() => {
     if (steps.length === 0 || stepsIndex >= steps.length) {
       return;
     }
-    console.log(steps);
-
     setCurrentStep(steps[stepsIndex]);
 
     setTimeout(() => {
       setStepsIndex((stepsIndex) => stepsIndex + 1);
     }, 1000);
+    
   }, [steps, stepsIndex]);
 
-  const onLettersSubmit = (event: FormEvent<HTMLFormElement>) => {
+
+ 
+  const onLettersSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+  
     const form = event.currentTarget;
     const formElements = form.elements as typeof form.elements & {
       lettersInput: HTMLInputElement;
     };
     const letters = formElements.lettersInput.value.toUpperCase();
-
+  
     setCurrentStep(null);
     setStepsIndex(0);
-    setSteps(getSteps(letters));
+    console.log(isLoading)
+    setIsLoading(true);
+
+    const steps = await getSteps(letters);
+    setSteps(steps);
+    setIsLoading(false)
+  
   };
 
   return (
@@ -55,7 +64,7 @@ export const StringComponent: React.FC = () => {
           name="lettersInput"
           type="text"
         />
-        <Button text="Развернуть" type="submit" />
+        <Button text="Развернуть" type="submit" isLoader={isLoading}/>
       </form>
 
       <AlgorithmContainer extraClass={styles.balloons}>
@@ -77,10 +86,7 @@ export const StringComponent: React.FC = () => {
             } else {
               stateClass = ElementStates.Default;
             }
-            console.log(stateClass);
-            return (
-              <Circle key={index} state={stateClass} letter={letter} />
-            );
+            return <Circle key={index} state={stateClass} letter={letter} />;
           })}
       </AlgorithmContainer>
     </SolutionLayout>

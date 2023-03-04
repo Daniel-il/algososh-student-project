@@ -1,94 +1,93 @@
-import React from "react";
 import { ElementStates } from "../types/element-states";
-import { LettersStep, TStages } from "../types/utils";
 import { LinkedList } from "../components/list-page/list-page-class";
 import { Circle } from "../components/ui/circle/circle";
-
-export const randomArr = (minLen: number, maxLen: number): number[] => {
-  const len = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
-  const arr = new Array(len).fill(0).map(() => Math.floor(Math.random() * 101));
-  return arr;
-};
-
-
-export function selectionSortAscending(arrToShow: Array<{ letter: number; state: ElementStates }[]>, arrToSort: number[]) {
+import { LettersStep } from "../types/utils";
+import { TStepsOfList } from "../types/utils";
+export function selectionSortAscending(
+  arrToShow: Array<{ letter: number; state: ElementStates }[]>,
+  arrToSort: number[]
+) {
   const n = arrToSort.length;
 
- 
   const tempArr = [...arrToSort];
-
 
   let unsortedStart = 0;
 
- 
   while (unsortedStart < n - 1) {
-    
     let minIndex = unsortedStart;
 
-    
     for (let i = unsortedStart + 1; i < n; i++) {
       if (tempArr[i] < tempArr[minIndex]) {
         minIndex = i;
       }
 
-      
       // eslint-disable-next-line no-loop-func
-      arrToShow.push(tempArr.map((elem, key) => {
+      arrToShow.push(
+        tempArr.map((elem, key) => {
+          let color;
+          if (key < unsortedStart) {
+            color = ElementStates.Modified;
+          } else if (key === unsortedStart || key === i) {
+            color = ElementStates.Changing;
+          } else {
+            color = ElementStates.Default;
+          }
+          return { letter: elem, state: color };
+        })
+      );
+    }
+
+    if (minIndex !== unsortedStart) {
+      [tempArr[minIndex], tempArr[unsortedStart]] = [
+        tempArr[unsortedStart],
+        tempArr[minIndex],
+      ];
+    }
+
+    unsortedStart++;
+
+    arrToShow.push(
+      tempArr.map((elem, key) => {
         let color;
         if (key < unsortedStart) {
           color = ElementStates.Modified;
-        } else if (key === unsortedStart || key === i) {
+        } else if (key === unsortedStart || key === unsortedStart - 1) {
           color = ElementStates.Changing;
         } else {
           color = ElementStates.Default;
         }
         return { letter: elem, state: color };
-      }));
-    }
-
-    
-    if (minIndex !== unsortedStart) {
-      [tempArr[minIndex], tempArr[unsortedStart]] = [tempArr[unsortedStart], tempArr[minIndex]];
-    }
-
-    
-    unsortedStart++;
-
-   
-    // eslint-disable-next-line no-loop-func
-    arrToShow.push(tempArr.map((elem, key) => {
-      let color;
-      if (key < unsortedStart) {
-        color = ElementStates.Modified;
-      } else if (key === unsortedStart || key === unsortedStart - 1) {
-        color = ElementStates.Changing;
-      } else {
-        color = ElementStates.Default;
-      }
-      return { letter: elem, state: color };
-    }));
+      })
+    );
   }
 
-
-  arrToShow.push(tempArr.map((elem) => {
-    return { letter: elem, state: ElementStates.Modified };
-  }));
+  arrToShow.push(
+    tempArr.map((elem) => {
+      return { letter: elem, state: ElementStates.Modified };
+    })
+  );
 }
 
-export function selectionSortDescending(arrToShow: Array<{ letter: number; state: ElementStates }[]>, arrayToSort: number[]) {
+export function selectionSortDescending(
+  arrToShow: Array<{ letter: number; state: ElementStates }[]>,
+  arrayToSort: number[]
+) {
   let currentIndex = 0;
   let arrayLength = arrayToSort.length;
 
   let tempArray = [...arrayToSort];
 
-
-  arrToShow.push(tempArray.map((elem, index) => {
-    return { letter: elem, state: index < 2 ? ElementStates.Changing : ElementStates.Default };
-  }));
+  arrToShow.push(
+    tempArray.map((elem, index) => {
+      return {
+        letter: elem,
+        state: index < 2 ? ElementStates.Changing : ElementStates.Default,
+      };
+    })
+  );
 
   while (currentIndex < arrayLength - 1) {
     let maxIndex = currentIndex;
-
 
     for (let i = currentIndex + 1; i <= arrayLength - 1; i++) {
       if (tempArray[i] > tempArray[maxIndex]) {
@@ -96,48 +95,54 @@ export function selectionSortDescending(arrToShow: Array<{ letter: number; state
       }
     }
 
-
     if (maxIndex !== currentIndex) {
-      [tempArray[maxIndex], tempArray[currentIndex]] = [tempArray[currentIndex], tempArray[maxIndex]];
+      [tempArray[maxIndex], tempArray[currentIndex]] = [
+        tempArray[currentIndex],
+        tempArray[maxIndex],
+      ];
     }
 
-
-    // eslint-disable-next-line no-loop-func
-    arrToShow.push(tempArray.map((elem, index) => {
-      let color;
-      if (index < currentIndex) {
-        color = ElementStates.Modified;
-      } else if (index === currentIndex || index === maxIndex) {
-        color = ElementStates.Changing;
-      } else {
-        color = ElementStates.Default;
-      }
-      return { letter: elem, state: color };
-    }));
+    arrToShow.push(
+      // eslint-disable-next-line no-loop-func
+      tempArray.map((elem, index) => {
+        let color;
+        if (index < currentIndex) {
+          color = ElementStates.Modified;
+        } else if (index === currentIndex || index === maxIndex) {
+          color = ElementStates.Changing;
+        } else {
+          color = ElementStates.Default;
+        }
+        return { letter: elem, state: color };
+      })
+    );
 
     currentIndex++;
   }
 
-  arrToShow.push(tempArray.map((elem) => {
-    return { letter: elem, state: ElementStates.Modified };
-  }));
+  arrToShow.push(
+    tempArray.map((elem) => {
+      return { letter: elem, state: ElementStates.Modified };
+    })
+  );
 }
 
-export function bubbleSortAscending(arrToShow: Array<{ letter: number; state: ElementStates }[]>, arrToSort: number[]) {
+export function bubbleSortAscending(
+  arrToShow: Array<{ letter: number; state: ElementStates }[]>,
+  arrToSort: number[]
+) {
   const arrayLength = arrToSort.length;
   const sortedArray = [...arrToSort];
 
-
   arrToShow[0] = sortedArray.map((elem, index) => {
-    return { letter: elem, state: index < 2 ? ElementStates.Changing : ElementStates.Default };
+    return {
+      letter: elem,
+      state: index < 2 ? ElementStates.Changing : ElementStates.Default,
+    };
   });
 
   for (let endIndex = arrayLength - 1; endIndex > 0; endIndex--) {
-
-    
     for (let currentIndex = 0; currentIndex < endIndex; currentIndex++) {
-
-     
       const colors = sortedArray.map((elem, index) => {
         let color;
         if (index > endIndex) {
@@ -150,46 +155,53 @@ export function bubbleSortAscending(arrToShow: Array<{ letter: number; state: El
         return { letter: elem, state: color };
       });
 
-      
       arrToShow.push(colors);
 
-
       if (sortedArray[currentIndex] > sortedArray[currentIndex + 1]) {
-        [sortedArray[currentIndex], sortedArray[currentIndex + 1]] = [sortedArray[currentIndex + 1], sortedArray[currentIndex]];
+        [sortedArray[currentIndex], sortedArray[currentIndex + 1]] = [
+          sortedArray[currentIndex + 1],
+          sortedArray[currentIndex],
+        ];
       }
     }
   }
 
-
-  arrToShow.push(sortedArray.map((elem) => {
-    return { letter: elem, state: ElementStates.Modified };
-  }));
+  arrToShow.push(
+    sortedArray.map((elem) => {
+      return { letter: elem, state: ElementStates.Modified };
+    })
+  );
 }
 
-export function bubbleSortDescending(arrToShow: Array<{ letter: number; state: ElementStates }[]>, arrToSort: number[]) {
+export function bubbleSortDescending(
+  arrToShow: Array<{ letter: number; state: ElementStates }[]>,
+  arrToSort: number[]
+) {
   let length = arrToSort.length;
   let array = [...arrToSort];
 
- 
   arrToShow[0] = array.map((elem, index) => {
-    return { letter: elem, state: index < 2 ? ElementStates.Changing : ElementStates.Default };
+    return {
+      letter: elem,
+      state: index < 2 ? ElementStates.Changing : ElementStates.Default,
+    };
   });
-
 
   for (let i = length - 1; i > 0; i--) {
     for (let j = 0; j < i; j++) {
-
-      arrToShow.push(array.map((elem, index) => {
-        let color;
-        if (index > i) {
-          color = ElementStates.Modified;
-        } else if (index === j || index === j + 1) {
-          color = ElementStates.Changing;
-        } else {
-          color = ElementStates.Default;
-        }
-        return { letter: elem, state: color };
-      }));
+      arrToShow.push(
+        array.map((elem, index) => {
+          let color;
+          if (index > i) {
+            color = ElementStates.Modified;
+          } else if (index === j || index === j + 1) {
+            color = ElementStates.Changing;
+          } else {
+            color = ElementStates.Default;
+          }
+          return { letter: elem, state: color };
+        })
+      );
 
       if (array[j] < array[j + 1]) {
         [array[j], array[j + 1]] = [array[j + 1], array[j]];
@@ -197,10 +209,11 @@ export function bubbleSortDescending(arrToShow: Array<{ letter: number; state: E
     }
   }
 
-  
-  arrToShow.push(array.map((elem) => {
-    return { letter: elem, state: ElementStates.Modified };
-  }));
+  arrToShow.push(
+    array.map((elem) => {
+      return { letter: elem, state: ElementStates.Modified };
+    })
+  );
 }
 export const getSteps = (source: string): LettersStep[] => {
   const letters = source.split("");
@@ -246,12 +259,12 @@ export function add(
   value: string,
   atStart: boolean,
   list: LinkedList<string>
-): TStages[] {
-  const stages: TStages[] = [];
+): TStepsOfList[] {
+  const steps: TStepsOfList[] = [];
   const initialList = list.toArray();
   const index = atStart ? 0 : initialList.length;
 
-  stages.push({ index, value, stage: initialList, operation: "add" });
+  steps.push({ index, value, step: initialList, operation: "add" });
 
   if (atStart) {
     list.prepend(value);
@@ -259,92 +272,89 @@ export function add(
     list.append(value);
   }
 
-  stages.push({ index, stage: list.toArray(), operation: "add" });
-  stages.push({ index, stage: list.toArray() });
+  steps.push({ index, step: list.toArray(), operation: "add" });
+  steps.push({ index, step: list.toArray() });
 
-  return stages;
+  return steps;
 }
 
-export function remove(
-  fromStart: boolean,
-  list: LinkedList<string>
-): TStages[] {
-  const stages: TStages[] = [];
+export function remove(fromStart: boolean, list: LinkedList<string>): TStepsOfList[] {
+  const steps: TStepsOfList[] = [];
   const initialList = list.toArray();
   const index = fromStart ? 0 : initialList.length - 1;
   const elementToDelete = fromStart
     ? list.deleteFirst()?._value
     : list.deleteLast()?._value;
 
-  stages.push({
+  steps.push({
     index,
     value: elementToDelete,
-    stage: initialList,
+    step: initialList,
     operation: "delete",
   });
-  stages.push({ stage: list.toArray() });
+  steps.push({ step: list.toArray() });
 
-  return stages;
+  return steps;
 }
 
-export function addWithIndex(
+export function pushByIndex(
   index: number,
   value: string,
   list: LinkedList<string>
-): TStages[] {
-  const stages: TStages[] = [];
+): TStepsOfList[] {
+  const steps: TStepsOfList[] = [];
   const initialList = list.toArray();
 
-  stages.push({ index, value, stage: initialList, operation: "add" });
+  steps.push({ index, value, step: initialList, operation: "add" });
 
   list.addIndex(index, value);
 
-  stages.push({ index, stage: list.toArray(), operation: "add" });
-  stages.push({ index, stage: list.toArray() });
+  steps.push({ index, step: list.toArray(), operation: "add" });
+  steps.push({ index, step: list.toArray() });
 
-  return stages;
+  return steps;
 }
 
-export function deleteWithIndex(
+export function removeByIndex(
   index: number,
   list: LinkedList<string>
-): TStages[] {
-  const stages: TStages[] = [];
+): TStepsOfList[] {
+  const steps: TStepsOfList[] = [];
   const initialList = list.toArray();
   const elementToDelete = list.deleteIndex(index)?._value;
 
-  stages.push({
+  steps.push({
     index,
     value: elementToDelete,
-    stage: initialList,
+    step: initialList,
     operation: "delete",
   });
-  stages.push({ stage: list.toArray() });
+  steps.push({ step: list.toArray() });
 
-  return stages;
+  return steps;
 }
 
-export function calculateElementState(index: number, stage: TStages) {
-  const { index: stageIndex, value: stageValue, operation } = stage;
+export function calculateElementState(index: number, step: TStepsOfList) {
+  const { index: stepIndex, value: stepValue, operation } = step;
 
-  if (!operation || !stageIndex) {
+  if (!operation || !stepIndex) {
     return ElementStates.Default;
-  } else if (index < stageIndex) {
+  } else if (index < stepIndex) {
     return ElementStates.Changing;
-  } else if (index === stageIndex) {
-    return stageValue ? ElementStates.Changing : ElementStates.Modified;
+  } else if (index === stepIndex) {
+    return stepValue ? ElementStates.Changing : ElementStates.Modified;
   }
 
   return ElementStates.Default;
 }
 
-export function calculateElementHead(index: number, stage: TStages) {
-  const { operation, index: stageIndex, value: stageValue } = stage;
+export function calculateElementHead(index: number, step: TStepsOfList) {
+  const { operation, index: stepIndex, value: stepValue } = step;
 
-  if (operation === "add" && index === stageIndex) {
+  if (operation === "add" && index === stepIndex) {
     return (
       <Circle
-        letter={stageValue}
+        letter={stepValue}
         state={ElementStates.Changing}
         isSmall={true}
       />
@@ -354,19 +364,21 @@ export function calculateElementHead(index: number, stage: TStages) {
   return index === 0 ? "head" : "";
 }
 
-export function calculateElementTail(index: number, stage: TStages) {
-  const { operation, index: stageIndex, stage: stageList } = stage;
-  const lastIndex = stageList.length - 1;
-
-  if (operation === "delete" && index === stageIndex) {
-    return (
-      <Circle
-        letter={stageList[lastIndex]._value}
-        state={ElementStates.Changing}
-        isSmall={true}
-      />
-    );
+export function calculateElementTail(index: number, step: TStepsOfList) {
+  const { operation, index: stepIndex, step: stepList } = step;
+  if (stepList) {
+    const lastIndex = stepList.length - 1;
+    if (operation === "delete" && index === stepIndex) {
+      return (
+        <Circle
+          letter={stepList[lastIndex]._value}
+          state={ElementStates.Changing}
+          isSmall={true}
+        />
+      );
+    }
+    return index === lastIndex ? "tail" : "";
   }
 
-  return index === lastIndex ? "tail" : "";
+
 }

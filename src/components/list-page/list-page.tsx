@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useForm } from "../../hooks/useForm";
+import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { initialString } from "../../constants/utils";
 import {
-  addWithIndex,
+  pushByIndex,
   calculateElementHead,
   calculateElementState,
   calculateElementTail,
   remove,
   add,
-  deleteWithIndex,
+  removeByIndex,
 } from "../../utils/utils";
 import { AlgorithmContainer } from "../algorithm-container/algorithm-container";
 import { Button } from "../ui/button/button";
@@ -15,36 +15,31 @@ import { Circle } from "../ui/circle/circle";
 import { ArrowIcon } from "../ui/icons/arrow-icon";
 import { Input } from "../ui/input/input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { LinkedList, LinkedListNode } from "./list-page-class";
+import { LinkedList} from "./list-page-class";
 import styles from "./list-page.module.css";
+import { TStepsOfList } from "../../types/utils";
 
 
 
-export type TStages = {
-  stage: LinkedListNode<string>[];
-  index?: number;
-  value?: string;
-  operation?: string;
-};
 
 export const ListPage: React.FC = () => {
-  const list = useMemo(() => new LinkedList(listForFirstRender), []);
-  const intervalAnimationRef = useRef<ReturnType<typeof setInterval> | null>(
+  const list = useMemo(() => new LinkedList(initialString), []);
+  const delay = useRef<ReturnType<typeof setInterval> | null>(
     null
   );
-  const listForFirstRender = ["1", "2", "3", "19", "44", "81", "77"];
-  const { values, handleChange, setValues } = useForm({ value: "", index: "" });
+  const [inputValue, setInputValue] = useState('')
+  const [inputIndexValue, setInputIndexValue] = useState('')
 
   useEffect(() => {
     return () => {
-      if (intervalAnimationRef.current) {
-        clearInterval(intervalAnimationRef.current);
+      if (delay.current) {
+        clearInterval(delay.current);
       }
     };
   }, []);
 
-  const [stagesToRender, setStagesToRender] = useState<TStages[]>([
-    { stage: list.toArray() },
+  const [stepsToRender, setStepsToRender] = useState<TStepsOfList[]>([
+    { step: list.toArray() },
   ]);
 
   const [renderingStage, setRenderingStage] = useState(0);
@@ -54,21 +49,21 @@ export const ListPage: React.FC = () => {
     | "addLast"
     | "deleteFirst"
     | "deleteLast"
-    | "addWithIndex"
-    | "deleteWithIndex"
+    | "pushByIndex"
+    | "removeByIndex"
     | null
   >(null);
 
   useEffect(() => {
     if (operationToRender) {
-      let temporalArray: TStages[] = [];
+      let temporalArray: TStepsOfList[] = [];
 
       switch (operationToRender) {
         case "addFirst":
-          temporalArray = add(values.value, true, list);
+          temporalArray = add(inputValue, true, list);
           break;
         case "addLast":
-          temporalArray = add(values.value, false, list);
+          temporalArray = add(inputValue, false, list);
           break;
         case "deleteFirst":
           temporalArray = remove(true, list);
@@ -76,30 +71,29 @@ export const ListPage: React.FC = () => {
         case "deleteLast":
           temporalArray = remove(false, list);
           break;
-        case "addWithIndex":
-          temporalArray = addWithIndex(
-            Number(values.index),
-            values.value,
+        case "pushByIndex":
+          temporalArray = pushByIndex(
+            Number(inputIndexValue),
+            inputValue,
             list
           );
           break;
-        case "deleteWithIndex":
-          temporalArray = deleteWithIndex(Number(values.index), list);
+        case "removeByIndex":
+          temporalArray = removeByIndex(Number(inputIndexValue), list);
           break;
         default:
           break;
       }
       if (temporalArray.length > 1) {
-        setStagesToRender(temporalArray);
+        setStepsToRender(temporalArray);
         setRenderingStage(0);
-        intervalAnimationRef.current = setInterval(() => {
+        delay.current = setInterval(() => {
           setRenderingStage((renderingStage) => {
-            if (renderingStage === stagesToRender.length - 1) {
-              if (!!intervalAnimationRef.current) {
-                clearInterval(intervalAnimationRef.current);
+            if (renderingStage === stepsToRender.length - 1) {
+              if (delay.current !== null) {
+                clearInterval(delay.current);
               }
-              setValues({ value: "", index: "" });
-              setStagesToRender([{ stage: list.toArray() }]);
+              setStepsToRender([{ step: list.toArray() }]);
 
               setOperationToRender(null);
 
@@ -110,32 +104,25 @@ export const ListPage: React.FC = () => {
         }, 1000);
       }
     }
-  }, [
-    list,
-    operationToRender,
-    setValues,
-    stagesToRender.length,
-    values.index,
-    values.value,
-  ]);
+  }, [operationToRender]);
 
   return (
     <SolutionLayout title="Связный список">
       <div className={styles.list__controls}>
         <Input
-          value={values.value}
+          value={inputValue}
           name={"value"}
           isLimitText={true}
           type={"text"}
           maxLength={4}
           extraClass={styles.list__input}
-          onChange={handleChange}
+          onChange={(e: ChangeEvent<HTMLInputElement> ) => {setInputValue(e.target.value)}}
         />
         <Button
           text={"Добавить в head"}
-          extraClass={styles.button}
+          extraClass={styles.list__button_small}
           disabled={
-            !values.value.length ||
+            !inputValue.length ||
             (operationToRender !== "addFirst" && !!operationToRender)
           }
           onClick={() => setOperationToRender("addFirst")}
@@ -143,9 +130,9 @@ export const ListPage: React.FC = () => {
         />
         <Button
           text={"Добавить в tail"}
-          extraClass={styles.button}
+          extraClass={styles.list__button_small}
           disabled={
-            !values.value.length ||
+            !inputValue.length ||
             (operationToRender !== "addLast" && !!operationToRender)
           }
           onClick={() => setOperationToRender("addLast")}
@@ -153,7 +140,7 @@ export const ListPage: React.FC = () => {
         />
         <Button
           text={"Удалить из head"}
-          extraClass={styles.button}
+          extraClass={styles.list__button_small}
           disabled={operationToRender !== "deleteFirst" && !!operationToRender}
           onClick={() => setOperationToRender("deleteFirst")}
           isLoader={operationToRender === "deleteFirst"}
@@ -166,55 +153,57 @@ export const ListPage: React.FC = () => {
           isLoader={operationToRender === "deleteLast"}
         />
         <Input
-          value={values.index}
+          value={inputIndexValue}
           name={"index"}
           placeholder={"Введите индекс"}
           isLimitText={false}
           type={"number"}
           extraClass={styles.list__input}
-          onChange={handleChange}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            setInputIndexValue(e.target.value)
+          }}
         />
         <Button
           text={"Добавить по индексу"}
-          extraClass={styles.button}
+          extraClass={styles.list__button_large}
           disabled={
-            Number(values.index) > list.toArray().length - 1 ||
-            Number(values.index) < 0 ||
-            !values.index.length ||
-            !values.value.length ||
-            (operationToRender !== "addWithIndex" && !!operationToRender)
+            Number(inputIndexValue) > list.toArray().length - 1 ||
+            Number(inputIndexValue) < 0 ||
+            !inputIndexValue.length ||
+            !inputValue.length ||
+            (operationToRender !== "pushByIndex" && !!operationToRender)
           }
-          onClick={() => setOperationToRender("addWithIndex")}
-          isLoader={operationToRender === "addWithIndex"}
+          onClick={() => setOperationToRender("pushByIndex")}
+          isLoader={operationToRender === "pushByIndex"}
         />
         <Button
           text={"Удалить по индексу"}
-          extraClass={styles.button}
+          extraClass={styles.list__button_large}
           disabled={
-            Number(values.index) > list.toArray().length - 1 ||
-            Number(values.index) < 0 ||
-            !values.index.length ||
-            (operationToRender !== "deleteWithIndex" && !!operationToRender)
+            Number(inputIndexValue) > list.toArray().length - 1 ||
+            Number(inputIndexValue) < 0 ||
+            !inputIndexValue.length ||
+            (operationToRender !== "removeByIndex" && !!operationToRender)
           }
-          onClick={() => setOperationToRender("deleteWithIndex")}
-          isLoader={operationToRender === "deleteWithIndex"}
+          onClick={() => setOperationToRender("removeByIndex")}
+          isLoader={operationToRender === "removeByIndex"}
         />
       </div>
       <AlgorithmContainer>
-        {stagesToRender[renderingStage].stage.map((elem, key, array) => {
+        {stepsToRender[renderingStage].step.map((elem, index, array) => {
           return (
-            <div key={key}>
+            <div key={index} className={styles.element__container}>
               <Circle
-                letter={String(elem)}
-                head={calculateElementHead(key, stagesToRender[renderingStage])}
-                tail={calculateElementTail(key, stagesToRender[renderingStage])}
-                index={key}
+                letter={String(elem._value)}
+                head={calculateElementHead(index, stepsToRender[renderingStage])}
+                tail={calculateElementTail(index, stepsToRender[renderingStage])}
+                index={index}
                 state={calculateElementState(
-                  key,
-                  stagesToRender[renderingStage]
+                  index,
+                  stepsToRender[renderingStage]
                 )}
               />
-              {key < array.length - 1 ? <ArrowIcon /> : null}
+              {index < array.length - 1 ? <ArrowIcon /> : null}
             </div>
           );
         })}

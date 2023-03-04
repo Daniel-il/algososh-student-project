@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { FormEvent, FormEventHandler, useEffect, useRef, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { TQueueItem } from "../../types/utils";
 import { Circle } from "../ui/circle/circle";
@@ -6,15 +6,15 @@ import { ElementStates } from "../../types/element-states";
 import { Button } from "../ui/button/button";
 import { Input } from "../ui/input/input";
 import { AlgorithmContainer } from "../algorithm-container/algorithm-container";
-import styles from './queue-page.module.css'
+import styles from "./queue-page.module.css";
 import { QueueClass } from "./queue-page-class";
 
 export const QueuePage: React.FC = () => {
-  const [inputValue, setInputValue] = useState(""); 
-  const [isLoading, setIsLoading] = useState(false); 
+  const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const queueRef = useRef(new QueueClass(7));
 
-  const [animation, setAnimation] = useState<'head' | 'tail' | null>(null);
+  const [animation, setAnimation] = useState<"head" | "tail" | null>(null);
 
   useEffect(() => {
     timerRef.current = setTimeout(() => {
@@ -24,62 +24,78 @@ export const QueuePage: React.FC = () => {
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // clear timer Timeout when unmounted to prevent memory leak
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
-  const handleEnqueueClick = (event: MouseEvent<HTMLButtonElement>) => {
-   queueRef.current.enqueue(inputValue);
+  const handleEnqueueClick = () => {
+    queueRef.current.enqueue(inputValue);
     setInputValue("");
-    setAnimation('tail');
+    setAnimation("tail");
   };
 
- 
-  const handleDequeueClick = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleDequeueClick = () => {
     queueRef.current.dequeue();
-    setAnimation('head');
+    setAnimation("head");
   };
 
-  const handleClearClick = (event: MouseEvent<HTMLButtonElement>) => {
-    queueRef.current.clear()
-    setAnimation('tail');
+  const handleClearClick = () => {
+    queueRef.current.clear();
+    setAnimation("tail");
     setInputValue("");
   };
-
 
   return (
     <SolutionLayout title="Очередь">
-      <form className={styles.form__container}>
+      <form className={styles.form__container} onSubmit={(e: FormEvent) => {
+        e.preventDefault()
+        handleEnqueueClick()
+      }}>
         <Input
           value={inputValue}
           onChange={handleInputChange}
-          disabled={isLoading}
+          maxLength={4}
+          type='text'
+          isLimitText={true}
           extraClass={styles.input}
         />
-        <Button onClick={handleEnqueueClick} disabled={isLoading} text='Добавить' />
-        <Button onClick={handleDequeueClick} disabled={isLoading} text='Удалить'/>
-        <Button onClick={handleClearClick} disabled={isLoading} text='Очистить' />
+        <Button
+          onClick={handleEnqueueClick}
+          disabled={!inputValue}
+          text="Добавить"
+          extraClass={styles.button}
+        />
+        <Button
+          onClick={handleDequeueClick}  
+          disabled={queueRef.current.tail === null}
+          text="Удалить"
+          extraClass={styles.button}
+        />
+        <Button
+          onClick={handleClearClick}
+          disabled={queueRef.current.tail === null}
+          text="Очистить"
+          extraClass={styles.button}
+        />
       </form>
       <AlgorithmContainer>
-      {queueRef.current.items &&
+        {queueRef.current.items &&
           queueRef.current.items.map((item, index) => (
-          <Circle
-            key={index}
-            letter={item}
-            isActive={index === 0}
-            animationDelay={index * 0.3}
-          />
-        ))}
-      </AlgorithmContainer> 
+            <Circle
+              key={index}
+              letter={item}
+              state={
+                (animation === "head" && index === queueRef.current.head - 1) ||
+                (animation === "tail" && index === queueRef.current.tail - 1)
+                  ? ElementStates.Changing
+                  : ElementStates.Default
+              }
+              head={queueRef.current.head === index ? 'head' : ''}
+              tail={queueRef.current.tail - 1  === index ? 'tail' : ''}
+              index={index}
+            />
+          ))}
+      </AlgorithmContainer>
     </SolutionLayout>
   );
 };

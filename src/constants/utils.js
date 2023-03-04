@@ -1,0 +1,1 @@
+export const initialString = ["1", "2", "3", "19", "44", "81", "77"];
