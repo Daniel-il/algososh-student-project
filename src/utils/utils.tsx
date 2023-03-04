@@ -283,8 +283,8 @@ export function remove(fromStart: boolean, list: LinkedList<string>): TStepsOfLi
   const initialList = list.toArray();
   const index = fromStart ? 0 : initialList.length - 1;
   const elementToDelete = fromStart
-    ? list.deleteFirst()?._value
-    : list.deleteLast()?._value;
+    ? list.deleteFirst()?.value
+    : list.deleteLast()?.value;
 
   steps.push({
     index,
@@ -321,7 +321,16 @@ export function removeByIndex(
 ): TStepsOfList[] {
   const steps: TStepsOfList[] = [];
   const initialList = list.toArray();
-  const elementToDelete = list.deleteIndex(index)?._value;
+  const elementToDelete = list.deleteIndex(index)?.value;
+
+  if (elementToDelete === undefined) {
+    throw new Error(`Элемент такого индекса ${index} не найден`);
+  }
+
+  const updatedList = [
+    ...initialList.slice(0, index),
+    ...initialList.slice(index + 1),
+  ];
 
   steps.push({
     index,
@@ -329,12 +338,12 @@ export function removeByIndex(
     step: initialList,
     operation: "delete",
   });
-  steps.push({ step: list.toArray() });
+  steps.push({ step: updatedList });
 
   return steps;
 }
 
-export function calculateElementState(index: number, step: TStepsOfList) {
+export function findElementState(index: number, step: TStepsOfList) {
   const { index: stepIndex, value: stepValue, operation } = step;
 
   if (!operation || !stepIndex) {
@@ -342,43 +351,31 @@ export function calculateElementState(index: number, step: TStepsOfList) {
   } else if (index < stepIndex) {
     return ElementStates.Changing;
   } else if (index === stepIndex) {
-    return stepValue ? ElementStates.Changing : ElementStates.Modified;
+    return stepValue !== undefined ? ElementStates.Changing : ElementStates.Modified;
   }
 
   return ElementStates.Default;
 }
 
-export function calculateElementHead(index: number, step: TStepsOfList) {
+export function findElementHead(index: number, step: TStepsOfList) {
   const { operation, index: stepIndex, value: stepValue } = step;
 
-  if (operation === "add" && index === stepIndex) {
-    return (
-      <Circle
-        letter={stepValue}
-        state={ElementStates.Changing}
-        isSmall={true}
-      />
-    );
-  }
-
-  return index === 0 ? "head" : "";
+  return operation === "add" && index === stepIndex
+    ? <Circle letter={stepValue} state={ElementStates.Changing} isSmall={true} />
+    : index === 0
+    ? "head"
+    : "";
 }
 
-export function calculateElementTail(index: number, step: TStepsOfList) {
+export function findElementTail(index: number, step: TStepsOfList) {
   const { operation, index: stepIndex, step: stepList } = step;
-  if (stepList) {
-    const lastIndex = stepList.length - 1;
+  const lastIndex = stepList?.length - 1;
+
+  if (lastIndex !== undefined) {
     if (operation === "delete" && index === stepIndex) {
-      return (
-        <Circle
-          letter={stepList[lastIndex]._value}
-          state={ElementStates.Changing}
-          isSmall={true}
-        />
-      );
+      const lastValue = stepList[lastIndex].value;
+      return <Circle letter={lastValue} state={ElementStates.Changing} isSmall />;
     }
     return index === lastIndex ? "tail" : "";
   }
-
-
 }

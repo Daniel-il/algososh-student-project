@@ -4,6 +4,9 @@
     width: 100%;
     margin: 0 auto;
 }
+.container { 
+    justify-content: center;
+}
 .input {
     max-width: 377px;
     margin-right: 12px;

@@ -78,7 +78,7 @@ export const QueuePage: React.FC = () => {
           extraClass={styles.button}
         />
       </form>
-      <AlgorithmContainer>
+      <AlgorithmContainer extraClass={styles.container}>
         {queueRef.current.items &&
           queueRef.current.items.map((item, index) => (
             <Circle

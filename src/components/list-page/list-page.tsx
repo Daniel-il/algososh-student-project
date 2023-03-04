@@ -2,9 +2,9 @@ import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from "react"
 import { initialString } from "../../constants/utils";
 import {
   pushByIndex,
-  calculateElementHead,
-  calculateElementState,
-  calculateElementTail,
+  findElementHead,
+  findElementState,
+  findElementTail,
   remove,
   add,
   removeByIndex,
@@ -42,7 +42,7 @@ export const ListPage: React.FC = () => {
     { step: list.toArray() },
   ]);
 
-  const [renderingStage, setRenderingStage] = useState(0);
+  const [stepToRender, setStepToRender] = useState(0);
 
   const [operationToRender, setOperationToRender] = useState<
     | "addFirst"
@@ -86,10 +86,10 @@ export const ListPage: React.FC = () => {
       }
       if (temporalArray.length > 1) {
         setStepsToRender(temporalArray);
-        setRenderingStage(0);
+        setStepToRender(0);
         delay.current = setInterval(() => {
-          setRenderingStage((renderingStage) => {
-            if (renderingStage === stepsToRender.length - 1) {
+          setStepToRender((stepToRender) => {
+            if (stepToRender === stepsToRender.length - 1) {
               if (delay.current !== null) {
                 clearInterval(delay.current);
               }
@@ -99,7 +99,7 @@ export const ListPage: React.FC = () => {
 
               return 0;
             }
-            return renderingStage + 1;
+            return stepToRender + 1;
           });
         }, 1000);
       }
@@ -189,18 +189,18 @@ export const ListPage: React.FC = () => {
           isLoader={operationToRender === "removeByIndex"}
         />
       </div>
-      <AlgorithmContainer>
-        {stepsToRender[renderingStage].step.map((elem, index, array) => {
+      <AlgorithmContainer extraClass={styles.algortitm__container}>
+        {stepsToRender[stepToRender].step.map((elem, index, array) => {
           return (
             <div key={index} className={styles.element__container}>
               <Circle
-                letter={String(elem._value)}
-                head={calculateElementHead(index, stepsToRender[renderingStage])}
-                tail={calculateElementTail(index, stepsToRender[renderingStage])}
+                letter={String(elem.value)}
+                head={findElementHead(index, stepsToRender[stepToRender])}
+                tail={findElementTail(index, stepsToRender[stepToRender])}
                 index={index}
-                state={calculateElementState(
+                state={findElementState(
                   index,
-                  stepsToRender[renderingStage]
+                  stepsToRender[stepToRender]
                 )}
               />
               {index < array.length - 1 ? <ArrowIcon /> : null}

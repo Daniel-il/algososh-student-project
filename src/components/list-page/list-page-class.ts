@@ -1,9 +1,9 @@
 export class LinkedListNode<T> {
-    _value: T;
+    value: T;
     next: LinkedListNode<T> | null;
   
     constructor(value: T, next: LinkedListNode<T> | null = null) {
-      this._value = value;
+      this.value = value;
       this.next = next;
     }
   }
