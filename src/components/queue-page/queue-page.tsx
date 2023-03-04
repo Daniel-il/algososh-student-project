@@ -20,6 +20,7 @@ export const QueuePage: React.FC = () => {
     timerRef.current = setTimeout(() => {
       setAnimation(null);
     }, 500);
+    console.log(queueRef.current.tail)
   }, [animation]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -67,13 +68,13 @@ export const QueuePage: React.FC = () => {
         />
         <Button
           onClick={handleDequeueClick}  
-          disabled={queueRef.current.tail === null}
+          disabled={queueRef.current.tail === 0}
           text="Удалить"
           extraClass={styles.button}
         />
         <Button
           onClick={handleClearClick}
-          disabled={queueRef.current.tail === null}
+          disabled={queueRef.current.tail === 0}
           text="Очистить"
           extraClass={styles.button}
         />
