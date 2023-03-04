@@ -19,6 +19,8 @@ export const StringComponent: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [stepsIndex, setStepsIndex] = useState<number>(0);
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     if (steps.length === 0 || stepsIndex >= steps.length) {
@@ -33,25 +35,22 @@ export const StringComponent: React.FC = () => {
   }, [steps, stepsIndex]);
 
 
- 
+  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDisabled(event.target.value.length === 0);
+    setInputValue(event.target.value)
+  };
+
   const onLettersSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
-    const form = event.currentTarget;
-    const formElements = form.elements as typeof form.elements & {
-      lettersInput: HTMLInputElement;
-    };
-    const letters = formElements.lettersInput.value.toUpperCase();
-  
     setCurrentStep(null);
     setStepsIndex(0);
-    console.log(isLoading)
     setIsLoading(true);
-
-    const steps = await getSteps(letters);
-    setSteps(steps);
-    setIsLoading(false)
   
+    const steps = await getSteps(inputValue);
+    setSteps(steps);
+  
+    await new Promise((resolve) => setTimeout(resolve, 3500));
+    setIsLoading(false);
   };
 
   return (
@@ -63,8 +62,10 @@ export const StringComponent: React.FC = () => {
           extraClass={styles.input}
           name="lettersInput"
           type="text"
+          value={inputValue}
+          onChange={onInputChange}
         />
-        <Button text="Развернуть" type="submit" isLoader={isLoading}/>
+        <Button text="Развернуть" type="submit" isLoader={isLoading} disabled={isDisabled}/>
       </form>
 
       <AlgorithmContainer extraClass={styles.balloons}>

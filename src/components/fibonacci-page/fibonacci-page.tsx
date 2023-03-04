@@ -30,12 +30,14 @@ export const FibonacciPage: FC = () => {
     setFibonacciNumbers([]);
     await new Promise((resolve) => setTimeout(resolve, 0));
     let fibonacciNumbers = [1, 1];
-    if(input && number)
-    for (let i = 2; i < number; i++) {
-      fibonacciNumbers.push(fibonacciNumbers[i - 1] + fibonacciNumbers[i - 2]);
+    if (input && number) {
+      for (let i = 2; i < number; i++) {
+        fibonacciNumbers.push(fibonacciNumbers[i - 1] + fibonacciNumbers[i - 2]);
+      }
     }
-    setFibonacciNumbers(fibonacciNumbers);
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // Дополнительная задержка
     setLoading(false);
+    setFibonacciNumbers(fibonacciNumbers);
   };
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
@@ -54,7 +56,7 @@ export const FibonacciPage: FC = () => {
           text="Рассчитать"
           isLoader={loading}
           type='submit'
-          disabled={input && number && number > 19 ? true : false}
+          disabled={input && number && number > 19 ? true : false ||  input.length === 0 ? true : false}
         />
       </form>
       <AlgorithmContainer>

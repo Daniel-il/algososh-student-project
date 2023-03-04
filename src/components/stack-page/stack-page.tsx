@@ -75,16 +75,19 @@ export const StackPage: React.FC = () => {
               onClick={handlePushClick}
               text="Добавить"
               extraClass={styles.button}
+              disabled={inputValue.length === 0 ? true : false}
             />
             <Button
               onClick={handleRemoveClick}
               text="Удалить"
               extraClass={styles.button}
+              disabled={stack && !stack.stack.length}
             />
             <Button
               onClick={handleClearClick}
               text="Очистить"
               extraClass={styles.button}
+              disabled={ stack && !stack.stack.length}
             />
           </form>
         </div>
