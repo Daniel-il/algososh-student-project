@@ -27,8 +27,14 @@ export const SortingPage: React.FC = () => {
   const [arr, setArr] = useState<
   { letter: number; state: ElementStates }[]
 >([]);
-
-
+const generateNewRandomArr = () => {
+  setArr(randomArr());
+  setSortMethod("selection");
+  setSortDirection(null);
+}
+useEffect(()=> {
+setArr(randomArr())
+}, [])
 useEffect(() => {
   if (!!sortDirection) {
     const timer = setTimeout(() => {
@@ -70,11 +76,7 @@ useEffect(() => {
     setSortDirection("Descending");
   };
 
-  const generateNewRandomArr = () => {
-    setArr(randomArr());
-    setSortMethod("selection");
-    setSortDirection(null);
-  };
+ ;
 
   const randomArr = () => {
     arrToShow = [];

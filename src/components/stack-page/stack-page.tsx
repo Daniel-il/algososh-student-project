@@ -9,7 +9,7 @@ import { Stack } from "./stack-class";
 import { ElementStates } from "../../types/element-states";
 
 export const StackPage: React.FC = () => {
-  const [stack, setStack] = useState<Stack>()
+  const [stack, setStack] = useState<Stack<string>>()
   useMemo(()=> {
     setStack(new Stack())
   }, [])
@@ -34,7 +34,7 @@ export const StackPage: React.FC = () => {
   };
   const handleRemoveClick = () => {
     if (stack) {
-      const newStack = new Stack();
+      const newStack = new Stack<string>();
       newStack.stack = [...stack.stack];
       newStack.pop();
       setStack(newStack);
@@ -44,7 +44,7 @@ export const StackPage: React.FC = () => {
 
   const handleClearClick = () => {
     if (stack) {
-      const newStack = new Stack();
+      const newStack = new Stack<string>();
       setStack(newStack);
       setInputValue("");
     }

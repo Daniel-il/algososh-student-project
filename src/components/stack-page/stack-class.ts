@@ -1,11 +1,11 @@
-export class Stack {
-  stack: string[];
+export class Stack<T> {
+  stack: T[];
 
   constructor() {
     this.stack = [];
   }
 
-  push(value: string) {
+  push(value: T) {
     this.stack.push(value);
     return this.stack;
   }

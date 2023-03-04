@@ -1,18 +1,18 @@
 import { ElementStates } from "../../types/element-states";
 import { TQueueItem } from "../../types/utils";
 
-export class QueueClass {
-  items: string[];
+export class QueueClass<T> {
+  items: T[];
 
   constructor(private capacity: number) {
-    this.items = new Array(capacity).fill("");
+    this.items = new Array(capacity).fill(undefined);
   }
 
   head = 0;
   tail = 0;
 
-  enqueue(input: string) {
-    if (this.size() === this.capacity || input === "") {
+  enqueue(input: T) {
+    if (this.size() === this.capacity || input === undefined) {
       return;
     }
   
@@ -20,19 +20,19 @@ export class QueueClass {
     this.tail = (this.tail + 1)
   }
 
-  dequeue() {
+  dequeue(): T | null {
     if (this.size() === 0) {
       return null;
     }
 
     const value = this.items[this.head];
-    this.items[this.head] = "";
+    this.items[this.head] = undefined as any;
     this.head = (this.head + 1) 
     return value;
   }
 
   clear() {
-    this.items = new Array(this.capacity).fill("");
+    this.items = new Array(this.capacity).fill(undefined);
     this.head = 0;
     this.tail = 0;
   }

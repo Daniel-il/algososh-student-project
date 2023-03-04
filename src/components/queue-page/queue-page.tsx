@@ -12,7 +12,7 @@ import { QueueClass } from "./queue-page-class";
 export const QueuePage: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const queueRef = useRef(new QueueClass(7));
+  const queueRef = useRef(new QueueClass<string>(7));
 
   const [animation, setAnimation] = useState<"head" | "tail" | null>(null);
 

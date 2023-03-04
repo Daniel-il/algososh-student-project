@@ -297,59 +297,46 @@ export function remove(fromStart: boolean, list: LinkedList<string>): TStepsOfLi
   return steps;
 }
 
-export function pushByIndex(
-  index: number,
-  value: string,
-  list: LinkedList<string>
-): TStepsOfList[] {
-  const steps: TStepsOfList[] = [];
-  const initialList = list.toArray();
+export function pushByIndex(index: number, value: string, list: LinkedList<string>): TStepsOfList[] {
+  const fillArr: TStepsOfList[] = [];
 
-  steps.push({ index, value, step: initialList, operation: "add" });
+  fillArr.push({ index: index, value: value, step: list.toArray(), operation: 'add' });
 
   list.addIndex(index, value);
 
-  steps.push({ index, step: list.toArray(), operation: "add" });
-  steps.push({ index, step: list.toArray() });
+  fillArr.push({
+    index: index,
+    step: list.toArray(),
+    operation: 'add',
+  });
 
-  return steps;
+  fillArr.push({ index: index, step: list.toArray() });
+
+  return fillArr;
 }
 
-export function removeByIndex(
-  index: number,
-  list: LinkedList<string>
-): TStepsOfList[] {
-  const steps: TStepsOfList[] = [];
-  const initialList = list.toArray();
+export function removeByIndex(index: number, list: LinkedList<string>): TStepsOfList[] {
+  const fillArr: TStepsOfList[] = [];
+
   const elementToDelete = list.deleteIndex(index)?.value;
 
-  if (elementToDelete === undefined) {
-    throw new Error(`Элемент такого индекса ${index} не найден`);
-  }
+  list.addIndex(index, ' ');
 
-  const updatedList = [
-    ...initialList.slice(0, index),
-    ...initialList.slice(index + 1),
-  ];
+  fillArr.push({ index: index, value: elementToDelete, step: list.toArray(), operation: 'delete' });
 
-  steps.push({
-    index,
-    value: elementToDelete,
-    step: initialList,
-    operation: "delete",
+  list.deleteIndex(index);
+
+  fillArr.push({
+    step: list.toArray(),
   });
-  steps.push({ step: updatedList });
 
-  return steps;
+  return fillArr;
 }
-
 export function findElementState(index: number, step: TStepsOfList) {
   const { index: stepIndex, value: stepValue, operation } = step;
 
   if (!operation || !stepIndex) {
     return ElementStates.Default;
-  } else if (index < stepIndex) {
-    return ElementStates.Changing;
   } else if (index === stepIndex) {
     return stepValue !== undefined ? ElementStates.Changing : ElementStates.Modified;
   }

@@ -12,12 +12,13 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./fibonacci-page.module.css";
 export const FibonacciPage: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [input, setInput] = useState<number>();
+  const [input, setInput] = useState('');
   const [fibonacciNumbers, setFibonacciNumbers] = useState<number[]>([]);
-
+  const [number, setNumber] = useState<number>()
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value);
+    const value = event.target.value;
     setInput(value);
+    setNumber(Number(value))
   };
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -29,8 +30,8 @@ export const FibonacciPage: FC = () => {
     setFibonacciNumbers([]);
     await new Promise((resolve) => setTimeout(resolve, 0));
     let fibonacciNumbers = [1, 1];
-    if(input)
-    for (let i = 2; i < input; i++) {
+    if(input && number)
+    for (let i = 2; i < number; i++) {
       fibonacciNumbers.push(fibonacciNumbers[i - 1] + fibonacciNumbers[i - 2]);
     }
     setFibonacciNumbers(fibonacciNumbers);
@@ -53,6 +54,7 @@ export const FibonacciPage: FC = () => {
           text="Рассчитать"
           isLoader={loading}
           type='submit'
+          disabled={input && number && number > 19 ? true : false}
         />
       </form>
       <AlgorithmContainer>
@@ -62,13 +64,8 @@ export const FibonacciPage: FC = () => {
             letter={`${number}`}
             timeoutValue={500}
             index={index}
-          ></Balloon>
+          />
         ))}
-        {() => {
-          if (fibonacciNumbers.length === 0) {
-            return null;
-          }
-        }}
       </AlgorithmContainer>
     </SolutionLayout>
   );
