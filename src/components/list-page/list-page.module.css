@@ -1,0 +1,53 @@
+.list__controls {
+    max-width: 952px;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px 0;
+    margin: 0 auto;
+}
+.algorithm__container {
+    justify-content: center;
+    margin: 70px auto 0;
+}
+.list__input {
+    max-width: 204px;
+    margin-right: 12px;
+}
+.element__container {
+    display: flex;
+    align-items: center;
+    gap: 5px
+}
+.list__button_small {
+    margin-right: 12px;
+}
+.list__button_large {
+    max-width: 345px;
+    width: 100%;
+    margin-right: 10px;
+}
+.list__button_large:last-of-type {
+    max-width: 345px;
+    width: 100%;
+    margin-right: 0;
+}
+.circle__container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.circle_big {
+    display: flex;
+    align-items: center;
+}
+.circle_small_bottom {
+    position: absolute;
+    top: 110px;
+    left: 10px;
+}
+.circle_small_top {
+    position: absolute;
+    top: -67px;
+    left: 12px;
+}

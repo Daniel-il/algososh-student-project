@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    width: 100%;
+    max-width: 522px;
+    margin: 0 auto;
+    gap: 4px 12px;
+    flex-wrap: wrap;
+}
+
+.input {
+    max-width: 322px;
+}
+.container__caption {
+    margin: 0;
+}
+.balloon_sorting {
+    background-color: #D252E1;
+}
+.balloon_sorted {
+    background-color: #7FE051;
+}
+.balloons { 
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}

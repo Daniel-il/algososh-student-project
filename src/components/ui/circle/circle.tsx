@@ -3,7 +3,7 @@ import styles from "./circle.module.css";
 import { ElementStates } from "../../../types/element-states";
 
 interface CircleProps {
-  state?: ElementStates;
+  state?: ElementStates | string;
   letter?: string;
   head?: string | React.ReactElement | null;
   index?: number;
