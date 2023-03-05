@@ -16,9 +16,11 @@ export const StackPage: React.FC = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [delay, setDelay] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [action, setAction] = useState<'push' | 'remove' | 'clear' | null>(null)
   useEffect(() => {
     timer.current = setTimeout(() => {
       setDelay(false);
+      setAction(null)
     }, 500);
   }, [delay]);
 
@@ -30,23 +32,28 @@ export const StackPage: React.FC = () => {
       }
       stack.stack.push(inputValue);
       setInputValue("");
+      setAction('push')
     }
   };
   const handleRemoveClick = () => {
     if (stack) {
-      const newStack = new Stack<string>();
+      setDelay(true)
+      const newStack = new Stack<string>()
       newStack.stack = [...stack.stack];
       newStack.pop();
       setStack(newStack);
       setInputValue("");
+      setAction('remove')
     }
   };
 
   const handleClearClick = () => {
     if (stack) {
+      setDelay(true)
       const newStack = new Stack<string>();
       setStack(newStack);
       setInputValue("");
+      setAction('clear')
     }
   };
 
@@ -76,18 +83,21 @@ export const StackPage: React.FC = () => {
               text="Добавить"
               extraClass={styles.button}
               disabled={inputValue.length === 0 ? true : false}
+              isLoader={action === 'push'}
             />
             <Button
               onClick={handleRemoveClick}
               text="Удалить"
               extraClass={styles.button}
               disabled={stack && !stack.stack.length}
+              isLoader={action === 'remove'}
             />
             <Button
               onClick={handleClearClick}
               text="Очистить"
               extraClass={styles.button}
               disabled={ stack && !stack.stack.length}
+              isLoader={action === 'clear'}
             />
           </form>
         </div>

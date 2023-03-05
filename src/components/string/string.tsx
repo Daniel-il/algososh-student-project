@@ -21,17 +21,20 @@ export const StringComponent: React.FC = () => {
   const [stepsIndex, setStepsIndex] = useState<number>(0);
   const [isDisabled, setIsDisabled] = useState(true);
   const [inputValue, setInputValue] = useState("");
-
+  
   useEffect(() => {
     if (steps.length === 0 || stepsIndex >= steps.length) {
       return;
     }
     setCurrentStep(steps[stepsIndex]);
-
-    setTimeout(() => {
+  
+    const timeoutId = setTimeout(() => {
       setStepsIndex((stepsIndex) => stepsIndex + 1);
     }, 1000);
-    
+  
+    return () => {
+      clearTimeout(timeoutId);
+    }
   }, [steps, stepsIndex]);
 
 

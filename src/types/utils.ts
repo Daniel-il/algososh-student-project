@@ -19,9 +19,12 @@ export type TQueueItem = {
 export interface QueueState {
   items: string[];
 }
-export type TStepsOfList = {
-  step: LinkedListNode<string>[];
-  index?: number;
-  value?: string;
-  operation?: string;
-};
+export type TLinkedArr = {
+  element: string;
+  state: ElementStates;
+  push?: boolean;
+  remove?: boolean;
+  elementSmall?: {
+    element?: string | null;
+  };
+}

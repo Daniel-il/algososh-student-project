@@ -13,12 +13,13 @@ export const QueuePage: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const queueRef = useRef(new QueueClass<string>(7));
-
+  const [action, setAction] = useState<'push' | 'remove' | 'clear' | null>(null)
   const [animation, setAnimation] = useState<"head" | "tail" | null>(null);
 
   useEffect(() => {
     timerRef.current = setTimeout(() => {
       setAnimation(null);
+      setAction(null)
     }, 500);
     console.log(queueRef.current.tail)
   }, [animation]);
@@ -33,17 +34,20 @@ export const QueuePage: React.FC = () => {
     queueRef.current.enqueue(inputValue);
     setInputValue("");
     setAnimation("tail");
+    setAction('push')
   };
 
   const handleDequeueClick = () => {
     queueRef.current.dequeue();
     setAnimation("head");
+    setAction('remove')
   };
 
   const handleClearClick = () => {
     queueRef.current.clear();
     setAnimation("tail");
     setInputValue("");
+    setAction('clear')
   };
 
   return (
@@ -62,21 +66,24 @@ export const QueuePage: React.FC = () => {
         />
         <Button
           onClick={handleEnqueueClick}
-          disabled={!inputValue}
+          disabled={!inputValue || queueRef.current.size() > 6}
           text="Добавить"
           extraClass={styles.button}
+          isLoader={action === 'push'}
         />
         <Button
           onClick={handleDequeueClick}  
-          disabled={queueRef.current.tail === 0}
+          disabled={queueRef.current.size() === 0  || queueRef.current.peek() === null}
           text="Удалить"
           extraClass={styles.button}
+          isLoader={action === 'remove'}
         />
         <Button
           onClick={handleClearClick}
           disabled={queueRef.current.tail === 0}
           text="Очистить"
           extraClass={styles.button}
+          isLoader={action === 'clear'}
         />
       </form>
       <AlgorithmContainer extraClass={styles.container}>
