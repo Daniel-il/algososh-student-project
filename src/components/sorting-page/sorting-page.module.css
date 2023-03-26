@@ -1,0 +1,25 @@
+.form {
+    width: 100%;
+    max-width: 988px;
+    display: flex;
+    margin: 0 auto;
+}
+.form__radio {
+    margin-right: 40px;
+}
+.form__radio:nth-of-type(2) {
+    margin-right: 52px;
+}
+.button {
+    margin-right: 12px;
+
+}
+.button:nth-of-type(2) {
+    margin-right: 80px;
+}
+.container {
+    align-items: flex-end;
+    gap: 10px;
+    justify-content: center;
+    max-width: 1124px;
+}

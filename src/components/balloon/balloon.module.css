@@ -1,0 +1,6 @@
+.balloon_show {
+  display: flex;
+}
+.balloon {
+  display: none;
+}

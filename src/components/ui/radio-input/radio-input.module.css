@@ -2,7 +2,9 @@
   display: none;
   transition: var(--common-transition);
 }
-
+.content {
+  display: flex;
+}
 .label {
   position: relative;
   display: flex;
