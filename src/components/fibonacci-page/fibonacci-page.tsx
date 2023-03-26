@@ -51,12 +51,14 @@ export const FibonacciPage: FC = () => {
           min={1}
           max={19}
           isLimitText={true}
+          data-testid='input'
         />
         <Button
           text="Рассчитать"
           isLoader={loading}
           type='submit'
           disabled={input && number && number > 19 ? true : false ||  input.length === 0 ? true : false}
+          data-testid='button'
         />
       </form>
       <AlgorithmContainer>

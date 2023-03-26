@@ -21,7 +21,6 @@ export const QueuePage: React.FC = () => {
       setAnimation(null);
       setAction(null)
     }, 500);
-    console.log(queueRef.current.tail)
   }, [animation]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -63,6 +62,7 @@ export const QueuePage: React.FC = () => {
           type='text'
           isLimitText={true}
           extraClass={styles.input}
+          data-testid='input'
         />
         <Button
           onClick={handleEnqueueClick}
@@ -70,6 +70,7 @@ export const QueuePage: React.FC = () => {
           text="Добавить"
           extraClass={styles.button}
           isLoader={action === 'push'}
+          data-testid='button'
         />
         <Button
           onClick={handleDequeueClick}  
@@ -77,6 +78,7 @@ export const QueuePage: React.FC = () => {
           text="Удалить"
           extraClass={styles.button}
           isLoader={action === 'remove'}
+          data-testid='button'
         />
         <Button
           onClick={handleClearClick}
@@ -84,6 +86,7 @@ export const QueuePage: React.FC = () => {
           text="Очистить"
           extraClass={styles.button}
           isLoader={action === 'clear'}
+          data-testid='button'
         />
       </form>
       <AlgorithmContainer extraClass={styles.container}>
@@ -101,6 +104,7 @@ export const QueuePage: React.FC = () => {
               head={queueRef.current.head === index ? 'head' : ''}
               tail={queueRef.current.tail - 1  === index ? 'tail' : ''}
               index={index}
+              testId='circle'
             />
           ))}
       </AlgorithmContainer>

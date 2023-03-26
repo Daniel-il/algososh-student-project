@@ -7,6 +7,7 @@ type TBalloonProps = {
   timeoutValue: number;
   index: number;
   state?: ElementStates | undefined;
+  testId?: string,
 };
 export const Balloon: FC<TBalloonProps> = ({
   letter,
@@ -30,6 +31,7 @@ export const Balloon: FC<TBalloonProps> = ({
       letter={letter}
       state={state}
       index={index}
+      testId={'circle'}
     ></Circle>
   );
 };

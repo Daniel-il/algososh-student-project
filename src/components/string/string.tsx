@@ -21,26 +21,25 @@ export const StringComponent: React.FC = () => {
   const [stepsIndex, setStepsIndex] = useState<number>(0);
   const [isDisabled, setIsDisabled] = useState(true);
   const [inputValue, setInputValue] = useState("");
-  
+
   useEffect(() => {
     if (steps.length === 0 || stepsIndex >= steps.length) {
       return;
     }
     setCurrentStep(steps[stepsIndex]);
-  
+
     const timeoutId = setTimeout(() => {
       setStepsIndex((stepsIndex) => stepsIndex + 1);
     }, 1000);
-  
+
     return () => {
       clearTimeout(timeoutId);
-    }
+    };
   }, [steps, stepsIndex]);
-
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsDisabled(event.target.value.length === 0);
-    setInputValue(event.target.value)
+    setInputValue(event.target.value);
   };
 
   const onLettersSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -48,10 +47,10 @@ export const StringComponent: React.FC = () => {
     setCurrentStep(null);
     setStepsIndex(0);
     setIsLoading(true);
-  
+
     const steps = await getSteps(inputValue);
     setSteps(steps);
-  
+
     await new Promise((resolve) => setTimeout(resolve, 3500));
     setIsLoading(false);
   };
@@ -67,8 +66,15 @@ export const StringComponent: React.FC = () => {
           type="text"
           value={inputValue}
           onChange={onInputChange}
+          data-testid="input"
         />
-        <Button text="Развернуть" type="submit" isLoader={isLoading} disabled={isDisabled}/>
+        <Button
+          text="Развернуть"
+          type="submit"
+          isLoader={isLoading}
+          disabled={isDisabled}
+          data-testid="button"
+        />
       </form>
 
       <AlgorithmContainer extraClass={styles.balloons}>
@@ -90,7 +96,15 @@ export const StringComponent: React.FC = () => {
             } else {
               stateClass = ElementStates.Default;
             }
-            return <Circle key={index} state={stateClass} letter={letter} />;
+            return (
+              <Circle
+                data-testid="circle"
+                key={index}
+                state={stateClass}
+                letter={letter}
+                testId='circle'
+              />
+            );
           })}
       </AlgorithmContainer>
     </SolutionLayout>

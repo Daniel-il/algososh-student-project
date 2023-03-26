@@ -42,6 +42,7 @@ export const ListPage: React.FC = () => {
         element: inputValue,
       },
     };
+
     setLinkedArr([...linkedArr]);
     await delay(500);
     linkedArr[0] = {
@@ -74,6 +75,7 @@ export const ListPage: React.FC = () => {
         element: inputValue,
       },
     };
+
     setLinkedArr([...linkedArr]);
     await delay(500);
     linkedArr[length - 1] = {
@@ -125,12 +127,14 @@ export const ListPage: React.FC = () => {
         element: linkedArr[linkedArr.length - 1].element,
       },
     };
+    
     setLinkedArr([...linkedArr]);
     await delay(1000);
     linkedArr.pop();
     setLinkedArr([...linkedArr]);
     setIsLoading({ ...isLoading, deleteTail: false });
   };
+
   const deleteIndex = async (inputIndex: number) => {
     setIsLoading({ ...isLoading, deleteIndex: true });
   
@@ -238,6 +242,7 @@ export const ListPage: React.FC = () => {
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setInputValue(e.target.value);
           }}
+          data-testid='valueInput'
         />
         <Button
           text={"Добавить в head"}
@@ -245,6 +250,7 @@ export const ListPage: React.FC = () => {
           disabled={inputValue.length === 0 ? true : false}
           onClick={addHead}
           isLoader={isLoading.addHead}
+          data-testid='button'
         />
         <Button
           text={"Добавить в tail"}
@@ -252,6 +258,7 @@ export const ListPage: React.FC = () => {
           disabled={inputValue.length === 0 ? true : false}
           onClick={addTail}
           isLoader={isLoading.addTail}
+          data-testid='button'
         />
         <Button
           text={"Удалить из head"}
@@ -259,6 +266,7 @@ export const ListPage: React.FC = () => {
           disabled={isLoading.addTail || isLoading.addHead}
           onClick={deleteHead}
           isLoader={isLoading.deleteHead}
+          data-testid='button'
         />
         <Button
           text={"Удалить из tail"}
@@ -266,6 +274,7 @@ export const ListPage: React.FC = () => {
           disabled={isLoading.deleteTail}
           onClick={deleteTail}
           isLoader={isLoading.deleteTail}
+          data-testid='button'
         />
         <Input
           value={inputIndexValue}
@@ -277,6 +286,7 @@ export const ListPage: React.FC = () => {
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setInputIndexValue(Number(e.target.value));
           }}
+          data-testid='indexInput'
         />
         <Button
           text={"Добавить по индексу"}
@@ -287,6 +297,7 @@ export const ListPage: React.FC = () => {
           }
           onClick={addIndex}
           isLoader={isLoading.addIndex}
+          data-testid='button'
         />
         <Button
           text={"Удалить по индексу"}
@@ -294,6 +305,7 @@ export const ListPage: React.FC = () => {
           disabled={inputIndexValue > linkedArr.length - 1}
           onClick={() => deleteIndex(Number(inputIndexValue))}
           isLoader={isLoading.deleteIndex}
+          data-testid='button'
         />
       </div>
       <AlgorithmContainer extraClass={styles.algorithm__container}>
@@ -306,6 +318,7 @@ export const ListPage: React.FC = () => {
                   state={ElementStates.Changing}
                   letter={element.elementSmall?.element}
                   extraClass={styles.circle_small_top}
+                  testId='circle'
                 />
               )}
               <div className={styles.circle_big}>
@@ -325,6 +338,7 @@ export const ListPage: React.FC = () => {
                       ? "tail"
                       : ""
                   }
+                  testId='circle'
                 />
                 <ArrowIcon />
               </div>
@@ -334,6 +348,7 @@ export const ListPage: React.FC = () => {
                   state={ElementStates.Changing}
                   letter={element.elementSmall?.element}
                   extraClass={styles.circle_small_bottom}
+                  testId='circleSmall'
                 />
               )}
             </div>
