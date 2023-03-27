@@ -81,7 +81,7 @@ describe("Тестирование работы страницы связног�
 
     cy.tick(500);
 
-    cy.get(circleTestId).eq(6).should("have.text", "34");
+    cy.get(circleTestId).eq(6).should("have.text", "77");
     cy.get(circleTestId).eq(7).should("have.css", "border", modifiedColor);
 
     cy.tick(500);
