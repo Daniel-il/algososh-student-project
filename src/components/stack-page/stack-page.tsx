@@ -77,6 +77,7 @@ export const StackPage: React.FC = () => {
               maxLength={4}
               extraClass={styles.input}
               isLimitText={true}
+              data-testid='input'
             />
             <Button
               onClick={handlePushClick}
@@ -84,6 +85,7 @@ export const StackPage: React.FC = () => {
               extraClass={styles.button}
               disabled={inputValue.length === 0 ? true : false}
               isLoader={action === 'push'}
+              data-testid='button'
             />
             <Button
               onClick={handleRemoveClick}
@@ -91,6 +93,7 @@ export const StackPage: React.FC = () => {
               extraClass={styles.button}
               disabled={stack && !stack.stack.length}
               isLoader={action === 'remove'}
+              data-testid='button'
             />
             <Button
               onClick={handleClearClick}
@@ -98,6 +101,7 @@ export const StackPage: React.FC = () => {
               extraClass={styles.button}
               disabled={ stack && !stack.stack.length}
               isLoader={action === 'clear'}
+              data-testid='button'
             />
           </form>
         </div>
@@ -109,6 +113,7 @@ export const StackPage: React.FC = () => {
               index={index}
               head={index === stack.stack.length - 1 ? 'top' : "" }
               state={delay && index === stack.stack.length - 1 ? ElementStates.Changing : ElementStates.Default}
+              testId='circle'
             />
           ))}
         </AlgorithmContainer>

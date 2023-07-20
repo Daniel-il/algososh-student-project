@@ -24,17 +24,21 @@ export const SortingPage: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<"Ascending" | "Descending" | null>(
     null
   );
+
   const [arr, setArr] = useState<
   { letter: number; state: ElementStates }[]
 >([]);
+
 const generateNewRandomArr = () => {
   setArr(randomArr());
   setSortMethod("selection");
   setSortDirection(null);
 }
+
 useEffect(()=> {
 setArr(randomArr())
 }, [])
+
 useEffect(() => {
   if (!!sortDirection) {
     const timer = setTimeout(() => {
@@ -70,6 +74,8 @@ useEffect(() => {
   const startSortDescending = () => {
     if (sortMethod === "selection") {
       selectionSortDescending(arrToSort, arrToShow);
+      console.log(arrToSort)
+      console.log(arrToShow)
     } else {
       bubbleSortDescending(arrToSort, arrToShow);
     }

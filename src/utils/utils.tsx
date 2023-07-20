@@ -191,7 +191,7 @@ export function bubbleSortDescending(
       arrToShow.push(
         array.map((elem, index) => {
           let color;
-          if (index > i) {
+          if (index >= i) {
             color = ElementStates.Modified;
           } else if (index === j || index === j + 1) {
             color = ElementStates.Changing;
@@ -214,18 +214,24 @@ export function bubbleSortDescending(
     })
   );
 }
+
 export const getSteps = (source: string): LettersStep[] => {
   const letters = source.split("");
   const steps: LettersStep[] = [];
-  const len = letters.length;
 
-  const elementStates = new Array<ElementStates>(len).fill(
+  const elementStates = new Array<ElementStates>(letters.length).fill(
     ElementStates.Default
   );
+  
+  steps.push({
+    letters: [...letters],
+    index: -1,
+    state: [...elementStates],
+  });
 
-  for (let i = 0; i < Math.ceil(len / 2); i++) {
+  for (let i = 0; i < Math.ceil(letters.length / 2); i++) {
     const leftIndex = i;
-    const rightIndex = len - 1 - i;
+    const rightIndex = letters.length - 1 - i;
 
     elementStates[leftIndex] = ElementStates.Changing;
     elementStates[rightIndex] = ElementStates.Changing;
